@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>The Xclusive Barbershop | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #9ca3af;
+            font-size: 20px;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+        .auth-card {
+            position: relative;
+        }
+        
+        /* Mobile responsive additions */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 0.8rem 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .logo {
+                order: 0;
+                flex: 1;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.6rem;
+            }
+            
+            .user-section {
+                order: 2;
+            }
+            
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .btn-login, .btn-logout {
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem 0;
+                order: 3;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 0.5rem;
+            }
+            
+            .auth-container {
+                padding: 1rem;
+                min-height: calc(100vh - 200px);
+            }
+            
+            .auth-card {
+                padding: 1.5rem;
+                margin: 0 auto;
+                width: 95%;
+            }
+            
+            .auth-card h2 {
+                font-size: 1.3rem;
+            }
+            
+            .auth-card input {
+                padding: 0.7rem;
+                font-size: 16px;
+            }
+            
+            .btn-primary {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-section .social-icons {
+                justify-content: center;
+            }
+            
+            .social-icons a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .close-btn {
+                top: 10px;
+                right: 15px;
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.5rem;
+            }
+            
+            .user-greeting {
+                display: none;
+            }
+            
+            .auth-card {
+                padding: 1rem;
+            }
+            
+            .auth-card h2 {
+                font-size: 1.1rem;
+            }
+            
+            .auth-card input {
+                padding: 0.6rem;
+                font-size: 14px;
+            }
+            
+            .btn-primary {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .auth-link {
+                font-size: 0.75rem;
+            }
+            
+            #securityNote {
+                font-size: 0.6rem;
+            }
+            
+            .close-btn {
+                top: 8px;
+                right: 10px;
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo">
+            </div>
+            <div class="logo-text">
+                <h1><i class="fas fa-crown"></i> THE XCLUSIVE</h1>
+                <p>BARBERSHOP • PREMIUM GROOMING</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="my-bookings.html">My Bookings</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="admin.html" id="adminLink" style="display:none;">Admin</a></li>
+            <li><a href="barber.html" id="barberLink" style="display:none;">Barber Dashboard</a></li>
+        </ul>
+        <div class="user-section">
+            <div class="user-greeting" id="userGreeting"></div>
+            <a href="login.html" class="btn-login" id="loginBtn"><i class="fas fa-user"></i> Sign In</a>
+            <button class="btn-logout hidden" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div id="loginStep" class="auth-card">
+            <!-- Close Button -->
+            <a href="index.html" class="close-btn" title="Close">
+                <i class="fas fa-times"></i>
+            </a>
+            <h2><i class="fas fa-cut"></i> Welcome Back</h2>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <label style="color: #9ca3af; font-size: 0.85rem; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe" style="width: auto; margin-right: 5px;"> Remember Me
+                    </label>
+                    <a href="forgot-password.html" style="color: #d4af37; font-size: 0.85rem; text-decoration: none;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%">Login</button>
+                <div id="errorMsg" class="error-msg"></div>
+                <div id="securityNote" style="margin-top: 1rem; font-size: 0.7rem; text-align: center; color: #6b7280;">
+                    <i class="fas fa-shield-alt"></i> Max 5 login attempts | Session timeout: 30 min
+                </div>
+            </form>
+            <div class="auth-link">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+        </div>
+
+        <!-- 2FA Verification (if enabled) -->
+        <div id="twoFactorStep" class="auth-card" style="display: none;">
+            <a href="index.html" class="close-btn" title="Close">
+                <i class="fas fa-times"></i>
+            </a>
+            <h2><i class="fas fa-shield-alt"></i> Two-Factor Authentication</h2>
+            <p style="text-align: center; color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem;">
+                Enter the verification code from your authenticator app
+            </p>
+            <form id="twoFactorForm">
+                <input type="text" id="twoFactorCode" placeholder="6-digit code" maxlength="6" required>
+                <button type="submit" class="btn-primary" style="width:100%">Verify</button>
+                <div id="twoFactorMsg" class="error-msg"></div>
+            </form>
+            <div class="auth-link">
+                <a href="#" onclick="backToLogin()">← Back to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-cut"></i> THE XCLUSIVE</h3>
+                <p>Premium barbershop specializing in precision fades, expert dreadlocks maintenance & custom hair dye colors.</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><i class="fas fa-chevron-right"></i> <a href="index.html">Home</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="services.html">Our Services</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="my-bookings.html">My Bookings</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="login.html">Sign In</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 121 Helen Joseph Rd, Bulwer, Durban</p>
+                <p><i class="fas fa-phone"></i> +27 31 123 4567</p>
+                <p><i class="fab fa-whatsapp"></i> +27 71 234 5678</p>
+                <p><i class="fas fa-envelope"></i> info@xclusivebarbershop.co.za</p>
+            </div>
+            <div class="footer-section">
+                <h3>Opening Hours</h3>
+                <p><i class="fas fa-clock"></i> Monday - Friday: 9am - 7pm</p>
+                <p><i class="fas fa-clock"></i> Saturday: 9am - 5pm</p>
+                <p><i class="fas fa-clock"></i> Sunday: Closed</p>
+                <p><i class="fas fa-credit-card"></i> Cash & Card Accepted</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 THE XCLUSIVE Barbershop | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 2px solid #d4af37; padding: 15px 20px; z-index: 10000; display: none; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+            <div style="flex: 1;">
+                <i class="fas fa-cookie-bite" style="color: #d4af37; margin-right: 10px;"></i>
+                <strong style="color: white;">🍪 We Use Cookies!</strong>
+                <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 0.85rem;">
+                    We use cookies to remember your login, save your preferences, and improve your experience.
+                </p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button id="declineCookies" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 500;">Decline</button>
+                <button id="acceptCookies" style="background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%); border: none; color: #0a0a0a; padding: 8px 25px; border-radius: 30px; cursor: pointer; font-weight: 600;">Accept All</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ============ MOBILE MENU TOGGLE ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (navbar && navLinks && !document.querySelector('.mobile-menu-btn')) {
+                const menuBtn = document.createElement('button');
+                menuBtn.className = 'mobile-menu-btn';
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                navbar.insertBefore(menuBtn, navLinks);
+                
+                menuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                });
+                
+                // Close mobile menu when clicking a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('show');
+                    });
+                });
+            }
+        });
+
+        let tempUserId = null;
+        let tempToken = null;
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#22c55e' : '#ef4444'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 10px;
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            `;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function backToLogin() {
+            document.getElementById('loginStep').style.display = 'block';
+            document.getElementById('twoFactorStep').style.display = 'none';
+            document.getElementById('twoFactorCode').value = '';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            document.getElementById('errorMsg').innerHTML = '';
+            const submitBtn = document.getElementById('loginForm').querySelector('button');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, remember: rememberMe })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store auth data
+                    setAuth(data.token, data.user);
+                    
+                    // Redirect based on role
+                    if (data.user.role === 'admin') {
+                        showToast('✅ Welcome Admin! Redirecting to Dashboard...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin.html';
+                        }, 1000);
+                    } else if (data.user.role === 'barber') {
+                        showToast('✅ Welcome Barber! Redirecting to your dashboard...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/barber.html';
+                        }, 1000);
+                    } else {
+                        showToast('✅ Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/services.html';
+                        }, 1000);
+                    }
+                } else {
+                    document.getElementById('errorMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (data.error || 'Login failed');
+                    if (data.error && data.error.includes('Too many failed attempts')) {
+                        document.getElementById('errorMsg').innerHTML = '<i class="fas fa-shield-alt"></i> ' + data.error;
+                    }
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').innerHTML = '<i class="fas fa-wifi"></i> Network error. Please try again.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Login';
+            }
+        });
+
+        document.getElementById('twoFactorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const code = document.getElementById('twoFactorCode').value;
+            
+            try {
+                const response = await fetch('/api/2fa/verify-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: tempUserId, code, tempToken })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    setAuth(data.token, data.user);
+                    showToast('✅ 2FA Verified! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    document.getElementById('twoFactorMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (data.error || 'Invalid verification code');
+                }
+            } catch (error) {
+                document.getElementById('twoFactorMsg').innerHTML = '<i class="fas fa-wifi"></i> Network error';
+            }
+        });
+
+        // Cookie Consent Functions
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                document.getElementById('cookieConsent').style.display = 'flex';
+            }
+        }
+        
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            localStorage.setItem('cookiesEnabled', 'true');
+            document.getElementById('cookieConsent').style.display = 'none';
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            localStorage.setItem('cookiesEnabled', 'false');
+            document.getElementById('cookieConsent').style.display = 'none';
+            fetch('/api/clear-cookies', { method: 'POST' });
+        }
+        
+        document.getElementById('acceptCookies').addEventListener('click', acceptCookies);
+        document.getElementById('declineCookies').addEventListener('click', declineCookies);
+        
+        updateUserUI();
+        checkCookieConsent();
+        
+        // If already logged in, redirect to appropriate page
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+            if (currentUser.role === 'admin') {
+                window.location.href = '/admin.html';
+            } else if (currentUser.role === 'barber') {
+                window.location.href = '/barber.html';
+            } else {
+                window.location.href = '/services.html';
+            }
+        }
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateX(100px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="chat-widget.js"></script>
+</body>
+</html>

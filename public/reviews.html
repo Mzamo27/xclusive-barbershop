@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>The Xclusive Barbershop | Reviews & Ratings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .reviews-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .write-review, .reviews-list {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .star {
+            cursor: pointer;
+            color: #4a4a5a;
+            transition: 0.2s;
+        }
+        
+        .star.active, .star:hover {
+            color: #d4af37;
+        }
+        
+        .review-card {
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #d4af37;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .review-name {
+            font-weight: 600;
+            color: #d4af37;
+        }
+        
+        .review-rating {
+            color: #d4af37;
+        }
+        
+        .review-service {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-comment {
+            color: #e5e7eb;
+            line-height: 1.5;
+        }
+        
+        .review-date {
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+        
+        .textarea-review {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            background: #0a0a0e;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .service-select {
+            width: 100%;
+            padding: 0.8rem;
+            background: #0a0a0e;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        /* Mobile responsive additions */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 0.8rem 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .logo {
+                order: 0;
+                flex: 1;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.6rem;
+            }
+            
+            .user-section {
+                order: 2;
+            }
+            
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .btn-login, .btn-logout {
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem 0;
+                order: 3;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 0.5rem;
+            }
+            
+            .reviews-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .write-review, .reviews-list {
+                padding: 1rem;
+            }
+            
+            .rating-stars {
+                font-size: 1.5rem;
+                justify-content: center;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-section .social-icons {
+                justify-content: center;
+            }
+            
+            .social-icons a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.5rem;
+            }
+            
+            .user-greeting {
+                display: none;
+            }
+            
+            .rating-stars {
+                font-size: 1.2rem;
+            }
+            
+            .write-review h3, .reviews-list h3 {
+                font-size: 1rem;
+            }
+            
+            .review-name {
+                font-size: 0.85rem;
+            }
+            
+            .review-comment {
+                font-size: 0.8rem;
+            }
+            
+            .textarea-review, .service-select {
+                padding: 0.6rem;
+                font-size: 14px;
+            }
+            
+            .btn-primary {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="cookieConsent" style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    border-top: 2px solid #d4af37;
+    padding: 15px 20px;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        <div style="flex: 1;">
+            <i class="fas fa-cookie-bite" style="color: #d4af37; margin-right: 10px;"></i>
+            <strong style="color: white;">🍪 We Use Cookies!</strong>
+            <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 0.85rem;">
+                We use cookies to remember your login, save your preferences, and improve your experience. 
+                By using our site, you agree to our use of cookies.
+            </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="declineCookies" style="
+                background: transparent;
+                border: 1px solid #ef4444;
+                color: #ef4444;
+                padding: 8px 20px;
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: 0.2s;
+            " onmouseover="this.style.background='#ef4444'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#ef4444'">
+                Decline
+            </button>
+            <button id="acceptCookies" style="
+                background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+                border: none;
+                color: #0a0a0a;
+                padding: 8px 25px;
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: 0.2s;
+            ">
+                Accept All
+            </button>
+        </div>
+    </div>
+</div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo">
+            </div>
+            <div class="logo-text">
+                <h1><i class="fas fa-crown"></i> THE XCLUSIVE</h1>
+                <p>BARBERSHOP • CUSTOMER REVIEWS</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="my-bookings.html">My Bookings</a></li>
+            <li><a href="reviews.html" class="active">Reviews</a></li>
+            <li><a href="admin.html" id="adminLink" style="display:none;">Admin</a></li>
+        </ul>
+        <div class="user-section">
+            <div class="user-greeting" id="userGreeting"></div>
+            <a href="login.html" class="btn-login" id="loginBtn"><i class="fas fa-user"></i> Sign In</a>
+            <button class="btn-logout hidden" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="section-title"><i class="fas fa-star"></i> Customer Reviews</h2>
+        
+        <div class="reviews-section">
+            <!-- Write Review Section -->
+            <div class="write-review">
+                <h3><i class="fas fa-pen"></i> Write a Review</h3>
+                <div id="reviewAuthMsg" style="color: #d4af37; margin-bottom: 1rem;"></div>
+                
+                <div class="rating-stars" id="ratingStars">
+                    <i class="fas fa-star star" data-rating="1"></i>
+                    <i class="fas fa-star star" data-rating="2"></i>
+                    <i class="fas fa-star star" data-rating="3"></i>
+                    <i class="fas fa-star star" data-rating="4"></i>
+                    <i class="fas fa-star star" data-rating="5"></i>
+                </div>
+                
+                <select id="reviewService" class="service-select">
+                    <option value="">Select a service (optional)</option>
+                    <option value="Low Fade">Low Fade</option>
+                    <option value="Mid Fade">Mid Fade</option>
+                    <option value="High Fade">High Fade</option>
+                    <option value="Taper Fade">Taper Fade</option>
+                    <option value="Burst Fade">Burst Fade</option>
+                    <option value="Dreadlocks Installation">Dreadlocks Installation</option>
+                    <option value="Dreadlocks Retwist">Dreadlocks Retwist</option>
+                    <option value="Brush Cut">Brush Cut</option>
+                    <option value="Blade Cut">Blade Cut</option>
+                    <option value="Beard Trim">Beard Trim</option>
+                    <option value="Beard + Hot Towel">Beard + Hot Towel</option>
+                </select>
+                
+                <textarea id="reviewComment" class="textarea-review" rows="4" placeholder="Share your experience..."></textarea>
+                
+                <button class="btn-primary" onclick="submitReview()" style="margin-top: 1rem; width: 100%;">Submit Review</button>
+                <div id="reviewMsg" style="margin-top: 1rem; text-align: center;"></div>
+            </div>
+            
+            <!-- Reviews List -->
+            <div class="reviews-list">
+                <h3><i class="fas fa-comments"></i> What Customers Say</h3>
+                <div id="reviewsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-cut"></i> THE XCLUSIVE</h3>
+                <p>Read what our customers say about us!</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><i class="fas fa-chevron-right"></i> <a href="index.html">Home</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="services.html">Services</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="reviews.html">Reviews</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 121 Helen Joseph Rd, Durban</p>
+                <p><i class="fas fa-phone"></i> +27 31 123 4567</p>
+                <p><i class="fab fa-whatsapp"></i> +27 71 234 5678</p>
+            </div>
+            <div class="footer-section">
+                <h3>Hours</h3>
+                <p><i class="fas fa-clock"></i> Mon-Fri: 9am - 7pm</p>
+                <p><i class="fas fa-clock"></i> Sat: 9am - 5pm</p>
+                <p><i class="fas fa-clock"></i> Sun: Closed</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 THE XCLUSIVE Barbershop | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // ============ MOBILE MENU TOGGLE ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (navbar && navLinks && !document.querySelector('.mobile-menu-btn')) {
+                const menuBtn = document.createElement('button');
+                menuBtn.className = 'mobile-menu-btn';
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                navbar.insertBefore(menuBtn, navLinks);
+                
+                menuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                });
+                
+                // Close mobile menu when clicking a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('show');
+                    });
+                });
+            }
+        });
+
+        let selectedRating = 0;
+        
+        // Star rating functionality
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < selectedRating; i++) {
+                    document.querySelectorAll('.star')[i].classList.add('active');
+                }
+            });
+        });
+        
+        async function loadReviews() {
+            try {
+                const response = await fetch('/api/reviews');
+                const reviews = await response.json();
+                
+                const container = document.getElementById('reviewsList');
+                if (reviews.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:2rem; color:#9ca3af;">No reviews yet. Be the first to review!</div>';
+                    return;
+                }
+                
+                container.innerHTML = reviews.map(review => `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-name"><i class="fas fa-user"></i> ${escapeHtml(review.user_name)}</span>
+                            <span class="review-rating">
+                                ${renderStars(review.rating)}
+                            </span>
+                        </div>
+                        ${review.service_name ? `<div class="review-service"><i class="fas fa-cut"></i> ${escapeHtml(review.service_name)}</div>` : ''}
+                        <div class="review-comment">${escapeHtml(review.comment)}</div>
+                        <div class="review-date">${new Date(review.created_at).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+        
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star" style="color: ${i <= rating ? '#d4af37' : '#4a4a5a'}; font-size: 0.9rem;"></i>`;
+            }
+            return stars;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function submitReview() {
+            const user = getCurrentUser();
+            if (!user) {
+                document.getElementById('reviewAuthMsg').innerHTML = '<i class="fas fa-lock"></i> Please login to leave a review. <a href="login.html" style="color:#d4af37;">Login here</a>';
+                return;
+            }
+            
+            if (selectedRating === 0) {
+                document.getElementById('reviewMsg').innerHTML = '<span style="color:#ef4444;">❌ Please select a rating</span>';
+                return;
+            }
+            
+            const service = document.getElementById('reviewService').value;
+            const comment = document.getElementById('reviewComment').value;
+            
+            if (!comment) {
+                document.getElementById('reviewMsg').innerHTML = '<span style="color:#ef4444;">❌ Please write a comment</span>';
+                return;
+            }
+            
+            const token = getToken();
+            document.getElementById('reviewMsg').innerHTML = '<span style="color:#d4af37;">Submitting...</span>';
+            
+            try {
+                const response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        rating: selectedRating,
+                        service_name: service || null,
+                        comment: comment
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('reviewMsg').innerHTML = '<span style="color:#22c55e;">✅ Thank you for your review!</span>';
+                    document.getElementById('reviewComment').value = '';
+                    document.getElementById('reviewService').value = '';
+                    selectedRating = 0;
+                    document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                    loadReviews();
+                    setTimeout(() => {
+                        document.getElementById('reviewMsg').innerHTML = '';
+                    }, 3000);
+                } else {
+                    document.getElementById('reviewMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('reviewMsg').innerHTML = '<span style="color:#ef4444;">❌ Network error</span>';
+            }
+        }
+        
+        // Check if user is logged in
+        if (getCurrentUser()) {
+            document.getElementById('reviewAuthMsg').innerHTML = '';
+        } else {
+            document.getElementById('reviewAuthMsg').innerHTML = '<i class="fas fa-lock"></i> Please login to leave a review. <a href="login.html" style="color:#d4af37;">Login here</a>';
+        }
+        
+        loadReviews();
+        updateUserUI();
+        if (getCurrentUser()?.role === 'admin') {
+            document.getElementById('adminLink').style.display = 'block';
+        }
+    </script>
+    <script>
+    // Cookie Consent Logic
+    function checkCookieConsent() {
+        const consent = localStorage.getItem('cookieConsent');
+        if (!consent) {
+            document.getElementById('cookieConsent').style.display = 'flex';
+        }
+    }
+    
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookieConsent').style.display = 'none';
+        // Enable cookies for login
+        enableCookies();
+    }
+    
+    function declineCookies() {
+        localStorage.setItem('cookieConsent', 'declined');
+        document.getElementById('cookieConsent').style.display = 'none';
+        // Disable cookies for login
+        disableCookies();
+        alert('You have declined cookies. You can still browse but login won\'t be saved. You can change this at any time by clearing your browser data.');
+    }
+    
+    function enableCookies() {
+        // Set a flag that cookies are allowed
+        localStorage.setItem('cookiesEnabled', 'true');
+    }
+    
+    function disableCookies() {
+        localStorage.setItem('cookiesEnabled', 'false');
+        // Clear any existing auth cookies
+        fetch('/api/clear-cookies', { method: 'POST' });
+    }
+    
+    document.getElementById('acceptCookies').addEventListener('click', acceptCookies);
+    document.getElementById('declineCookies').addEventListener('click', declineCookies);
+    
+    checkCookieConsent();
+</script>
+    <script src="chat-widget.js"></script>
+</body>
+</html>

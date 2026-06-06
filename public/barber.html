@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>THE XCLUSIVE | Barber Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0a0a0e 0%, #12121a 100%);
+            border-right: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .sidebar-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-header .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .logo-icon i {
+            font-size: 24px;
+            color: #0a0a0a;
+        }
+        .sidebar-header .logo-text h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+        }
+        .sidebar-header .logo-text p {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        .sidebar-nav {
+            padding: 1.5rem;
+        }
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-item a i {
+            width: 22px;
+        }
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+        }
+        .nav-item.active a {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 1.5rem;
+            transition: margin-left 0.3s ease;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .page-title p {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .real-time-clock {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #d4af37;
+        }
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* Sidebar Toggle Button for Mobile */
+        .sidebar-toggle {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: #d4af37;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .sidebar-toggle i {
+            color: #0a0a0a;
+            font-size: 1.2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        .stat-card i {
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 0.5rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+        .current-customer-section {
+            background: linear-gradient(135deg, #1a2e1a 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            text-align: center;
+        }
+        .current-customer-section h3 {
+            color: #22c55e;
+            margin-bottom: 0.5rem;
+        }
+        .customer-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        .customer-service {
+            font-size: 1rem;
+            color: #d4af37;
+            margin-bottom: 0.5rem;
+        }
+        .timer {
+            font-size: 3rem;
+            font-family: monospace;
+            font-weight: 700;
+            color: #d4af37;
+            margin: 1rem 0;
+        }
+        .complete-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .complete-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+        .no-customer {
+            padding: 2rem;
+            color: #6b7280;
+        }
+        .no-customer i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .queue-section {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+        .queue-section h3 {
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .queue-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        .queue-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        .queue-info {
+            flex: 1;
+            margin-left: 1rem;
+        }
+        .queue-name {
+            font-weight: 600;
+        }
+        .queue-service {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .start-btn:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .start-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        .empty-queue {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar-toggle {
+                display: flex;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .queue-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .queue-info {
+                margin-left: 0;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .real-time-clock {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+            .page-title h1 {
+                font-size: 1.2rem;
+            }
+            .page-title p {
+                font-size: 0.7rem;
+            }
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            .timer {
+                font-size: 2rem;
+            }
+            .customer-name {
+                font-size: 1.2rem;
+            }
+            .complete-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .user-info {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .real-time-clock {
+                order: 1;
+            }
+            .user-avatar {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo" style="width:150%; height:150%; object-fit:cover; border-radius:50%;">
+                </div>
+                <div class="logo-text">
+                    <h2>THE XCLUSIVE</h2>
+                    <p>Barber Dashboard</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="dashboard">
+                <a href="#"><i class="fas fa-chart-line"></i> Dashboard</a>
+            </div>
+            <div class="nav-item" data-tab="schedule">
+                <a href="#"><i class="fas fa-calendar"></i> My Schedule</a>
+            </div>
+            <div class="nav-item">
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="page-title">
+                <h1>Barber Dashboard</h1>
+                <p>Welcome back, <span id="barberName"></span> | Station: <span id="stationName"></span></p>
+            </div>
+            <div class="user-info">
+                <div class="real-time-clock" id="realTimeClock"></div>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-value" id="waitingCount">0</div>
+                    <div class="stat-label">Waiting in Queue</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="stat-value" id="completedToday">0</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-value" id="avgTime">0</div>
+                    <div class="stat-label">Avg Service Time (min)</div>
+                </div>
+            </div>
+
+            <div class="current-customer-section" id="currentCustomerSection">
+                <h3><i class="fas fa-cut"></i> Current Customer</h3>
+                <div id="currentCustomerContent">
+                    <div class="no-customer">
+                        <i class="fas fa-hourglass-half"></i>
+                        <p>No customer being served</p>
+                        <p style="font-size: 0.8rem;">Select a customer from the queue below</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="queue-section">
+                <h3><i class="fas fa-list"></i> Waiting Queue</h3>
+                <div id="queueList">
+                    <div class="empty-queue">
+                        <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                        <p>No customers waiting</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-schedule" class="tab-content" style="display: none;">
+            <div class="queue-section">
+                <h3><i class="fas fa-calendar-alt"></i> Today's Schedule</h3>
+                <div id="scheduleList">
+                    <div class="empty-queue">
+                        <i class="fas fa-calendar" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                        <p>Loading schedule...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let refreshInterval;
+        let timerInterval;
+        let currentCustomerId = null;
+        let serviceStartTime = null;
+        let currentBarberStation = 1;
+        let currentBarberName = '';
+        let isStartingService = false;
+
+        // ============ MOBILE SIDEBAR TOGGLE ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                });
+            }
+            
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768) {
+                    if (sidebar && sidebarToggle && !sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        
+        if (user.email === 'michael@xclusive.com') {
+            currentBarberStation = 1;
+            currentBarberName = 'Michael';
+        } else if (user.email === 'thabo@xclusive.com') {
+            currentBarberStation = 2;
+            currentBarberName = 'Thabo';
+        } else if (user.email === 'james@xclusive.com') {
+            currentBarberStation = 3;
+            currentBarberName = 'James';
+        } else {
+            currentBarberStation = user.barber_station || 1;
+            currentBarberName = user.name || 'Barber';
+        }
+
+        document.getElementById('barberName').innerHTML = currentBarberName;
+        document.getElementById('stationName').innerHTML = `Barber Station ${currentBarberStation}`;
+
+        function updateRealTimeClock() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false
+            };
+            document.getElementById('realTimeClock').innerHTML = now.toLocaleDateString('en-US', options);
+        }
+        updateRealTimeClock();
+        setInterval(updateRealTimeClock, 1000);
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                const tab = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+                document.getElementById(`tab-${tab}`).style.display = 'block';
+                
+                if (tab === 'schedule') {
+                    loadSchedule();
+                }
+                
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        function getStoredStartTime(customerId) {
+            const stored = localStorage.getItem(`service_start_${customerId}`);
+            if (stored) {
+                return new Date(stored);
+            }
+            return null;
+        }
+
+        function setStoredStartTime(customerId, startTime) {
+            localStorage.setItem(`service_start_${customerId}`, startTime.toISOString());
+        }
+
+        function removeStoredStartTime(customerId) {
+            localStorage.removeItem(`service_start_${customerId}`);
+        }
+
+        async function loadDashboard() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (isStartingService) {
+                console.log('Skipping dashboard reload while starting service...');
+                return;
+            }
+
+            try {
+                const queueRes = await fetch('/api/queue/status', { 
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const queueData = await queueRes.json();
+                const queue = queueData.queue || [];
+                
+                const waiting = queue.filter(q => q.status === 'waiting');
+                const serving = queue.filter(q => q.status === 'serving');
+                
+                document.getElementById('waitingCount').innerHTML = waiting.length;
+                
+                const myCustomer = serving.find(q => q.barber_station === currentBarberStation);
+                
+                if (myCustomer) {
+                    if (currentCustomerId !== myCustomer.id) {
+                        currentCustomerId = myCustomer.id;
+                        
+                        let startTime = getStoredStartTime(myCustomer.id);
+                        
+                        if (!startTime && myCustomer.actual_start_time && myCustomer.actual_start_time !== '0000-00-00 00:00:00') {
+                            startTime = new Date(myCustomer.actual_start_time);
+                            setStoredStartTime(myCustomer.id, startTime);
+                        }
+                        
+                        if (!startTime) {
+                            startTime = new Date();
+                            setStoredStartTime(myCustomer.id, startTime);
+                        }
+                        
+                        serviceStartTime = startTime;
+                        displayCurrentCustomer(myCustomer);
+                        startTimer();
+                    }
+                } else {
+                    if (currentCustomerId) {
+                        removeStoredStartTime(currentCustomerId);
+                    }
+                    currentCustomerId = null;
+                    serviceStartTime = null;
+                    document.getElementById('currentCustomerContent').innerHTML = `
+                        <div class="no-customer">
+                            <i class="fas fa-hourglass-half"></i>
+                            <p>No customer being served</p>
+                            <p style="font-size: 0.8rem;">Select a customer from the queue below</p>
+                        </div>
+                    `;
+                    if (timerInterval) clearInterval(timerInterval);
+                }
+                
+                const isBarberBusy = currentCustomerId !== null && serviceStartTime !== null;
+                
+                if (waiting.length > 0) {
+                    document.getElementById('queueList').innerHTML = waiting.map(q => `
+                        <div class="queue-item">
+                            <div>
+                                <span class="queue-number">#${q.queue_number}</span>
+                            </div>
+                            <div class="queue-info">
+                                <div class="queue-name">${escapeHtml(q.customer_name)}</div>
+                                <div class="queue-service">${q.service_name || 'Haircut'}</div>
+                            </div>
+                            ${isBarberBusy ? `
+                                <button class="start-btn" style="background: #6b7280; cursor: not-allowed;" disabled>
+                                    <i class="fas fa-ban"></i> Busy - Complete Current First
+                                </button>
+                            ` : `
+                                <button class="start-btn" onclick="startServing(${q.id}, '${escapeHtml(q.customer_name)}', ${q.queue_number}, '${escapeHtml(q.service_name || 'Haircut')}')">
+                                    <i class="fas fa-play"></i> Start Serving
+                                </button>
+                            `}
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('queueList').innerHTML = `
+                        <div class="empty-queue">
+                            <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                            <p>No customers waiting</p>
+                        </div>
+                    `;
+                }
+                
+                const statsRes = await fetch('/api/barber/stats', { 
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await statsRes.json();
+                document.getElementById('completedToday').innerHTML = stats.completedToday || 0;
+                document.getElementById('avgTime').innerHTML = stats.avgServiceTime || 0;
+                
+            } catch (err) {
+                console.error('Dashboard error:', err);
+            }
+        }
+
+        function displayCurrentCustomer(customer) {
+            const elapsed = serviceStartTime ? Math.floor((new Date() - serviceStartTime) / 1000) : 0;
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('currentCustomerContent').innerHTML = `
+                <div class="customer-name">${escapeHtml(customer.customer_name)}</div>
+                <div class="customer-service">${customer.service_name || 'Haircut'} | Queue #${customer.queue_number}</div>
+                <div class="timer" id="serviceTimer">${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}</div>
+                <button class="complete-btn" onclick="completeService(${customer.id})">
+                    <i class="fas fa-check"></i> Complete Service
+                </button>
+            `;
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (serviceStartTime) {
+                    const elapsed = Math.floor((new Date() - serviceStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timerDisplay = document.getElementById('serviceTimer');
+                    if (timerDisplay) {
+                        timerDisplay.innerHTML = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                    }
+                }
+            }, 1000);
+        }
+
+        async function startServing(id, customerName, queueNumber, serviceName) {
+            const token = localStorage.getItem('token');
+            
+            if (currentCustomerId !== null && serviceStartTime !== null) {
+                showToast('❌ You are already serving a customer! Complete current service first.', 'error');
+                return;
+            }
+            
+            if (!token) {
+                showToast('Please login again', 'error');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            isStartingService = true;
+            
+            try {
+                const now = new Date();
+                
+                const response = await fetch(`/api/barber/start/${id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        barber_station: currentBarberStation,
+                        actual_start_time: now.toISOString()
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    serviceStartTime = now;
+                    currentCustomerId = id;
+                    
+                    setStoredStartTime(id, serviceStartTime);
+                    
+                    document.getElementById('currentCustomerContent').innerHTML = `
+                        <div class="customer-name">${escapeHtml(customerName)}</div>
+                        <div class="customer-service">${escapeHtml(serviceName)} | Queue #${queueNumber}</div>
+                        <div class="timer" id="serviceTimer">00:00</div>
+                        <button class="complete-btn" onclick="completeService(${id})">
+                            <i class="fas fa-check"></i> Complete Service
+                        </button>
+                    `;
+                    
+                    startTimer();
+                    await refreshQueueOnly();
+                    await refreshStats();
+                    
+                    showToast(`✂️ Started serving ${customerName} (Queue #${queueNumber}) - Timer started at 00:00`, 'success');
+                } else {
+                    showToast(data.message || 'Failed to start service', 'error');
+                }
+            } catch (err) {
+                console.error('Start serving error:', err);
+                showToast('Network error: ' + err.message, 'error');
+            } finally {
+                setTimeout(() => {
+                    isStartingService = false;
+                }, 1000);
+            }
+        }
+
+        async function refreshQueueOnly() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                const queueRes = await fetch('/api/queue/status', { 
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const queueData = await queueRes.json();
+                const queue = queueData.queue || [];
+                const waiting = queue.filter(q => q.status === 'waiting');
+                
+                document.getElementById('waitingCount').innerHTML = waiting.length;
+                
+                if (waiting.length > 0) {
+                    document.getElementById('queueList').innerHTML = waiting.map(q => `
+                        <div class="queue-item">
+                            <div>
+                                <span class="queue-number">#${q.queue_number}</span>
+                            </div>
+                            <div class="queue-info">
+                                <div class="queue-name">${escapeHtml(q.customer_name)}</div>
+                                <div class="queue-service">${q.service_name || 'Haircut'}</div>
+                            </div>
+                            <button class="start-btn" style="background: #6b7280; cursor: not-allowed;" disabled>
+                                <i class="fas fa-ban"></i> Busy - Complete Current First
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('queueList').innerHTML = `
+                        <div class="empty-queue">
+                            <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                            <p>No customers waiting</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('Refresh queue error:', err);
+            }
+        }
+
+        async function refreshStats() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                const statsRes = await fetch('/api/barber/stats', { 
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await statsRes.json();
+                document.getElementById('completedToday').innerHTML = stats.completedToday || 0;
+                document.getElementById('avgTime').innerHTML = stats.avgServiceTime || 0;
+            } catch (err) {
+                console.error('Refresh stats error:', err);
+            }
+        }
+
+        async function completeService(id) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                showToast('Please login again', 'error');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                // First, get the queue item to find the appointment_id
+                const queueRes = await fetch('/api/queue/status', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const queueData = await queueRes.json();
+                const queueItem = queueData.queue.find(q => q.id === id);
+                
+                // Complete the service in queue_status
+                const response = await fetch(`/api/barber/complete/${id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        barber_station: currentBarberStation 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // If this came from an appointment, update appointment status to completed
+                    if (queueItem && queueItem.appointment_id) {
+                        try {
+                            await fetch(`/api/admin/appointments/${queueItem.appointment_id}/status`, {
+                                method: 'PUT',
+                                headers: { 
+                                    'Content-Type': 'application/json', 
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({ status: 'completed' })
+                            });
+                            console.log(`✅ Appointment #${queueItem.appointment_id} marked as completed`);
+                        } catch (err) {
+                            console.error('Failed to update appointment status:', err);
+                        }
+                    }
+                    
+                    showToast('✅ Service completed successfully!', 'success');
+                    if (timerInterval) clearInterval(timerInterval);
+                    
+                    removeStoredStartTime(id);
+                    
+                    serviceStartTime = null;
+                    currentCustomerId = null;
+                    loadDashboard();
+                    loadSchedule();
+                } else {
+                    showToast(data.message || 'Failed to complete service', 'error');
+                }
+            } catch (err) {
+                console.error('Complete service error:', err);
+                showToast('Network error: ' + err.message, 'error');
+            }
+        }
+
+        // ============ SCHEDULE FUNCTION - No Walk-ins, No Extra Text ============
+        async function loadSchedule() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                const res = await fetch(`/api/barber/schedule?station=${currentBarberStation}`, { 
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+                
+                const data = await res.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load schedule');
+                }
+                
+                // Filter out completed appointments as well
+                const appointments = (data.appointments || []).filter(a => a.status !== 'completed');
+                
+                if (appointments.length === 0) {
+                    document.getElementById('scheduleList').innerHTML = `
+                        <div class="empty-queue">
+                            <i class="fas fa-calendar-check" style="font-size: 3rem; margin-bottom: 1rem; display: block; color: #d4af37;"></i>
+                            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No appointments today</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let scheduleHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge" style="background: #d4af37; color: #0a0a0a;">
+                            <i class="fas fa-calendar"></i> ${appointments.length} Appointment${appointments.length !== 1 ? 's' : ''} Today
+                        </span>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <strong><i class="fas fa-calendar-alt"></i> Scheduled Appointments</strong>
+                    </div>
+                `;
+                
+                appointments.forEach(a => {
+                    const timeFormatted = a.appointment_time ? a.appointment_time.slice(0, 5) : '--:--';
+                    const isCheckedIn = a.checked_in === true;
+                    scheduleHTML += `
+                        <div class="queue-item" style="border-left: 3px solid ${isCheckedIn ? '#22c55e' : '#d4af37'}">
+                            <div>
+                                <span class="queue-number" style="font-size: 1.2rem;">${timeFormatted}</span>
+                            </div>
+                            <div class="queue-info">
+                                <div class="queue-name">
+                                    ${escapeHtml(a.customer_name)}
+                                    ${isCheckedIn ? '<span class="badge" style="background: #22c55e; color: white; margin-left: 0.5rem; font-size: 0.65rem;">✓ Checked In</span>' : ''}
+                                </div>
+                                <div class="queue-service">${escapeHtml(a.service_name)}</div>
+                                ${a.dye_color ? `<div style="font-size: 0.7rem; color: #d4af37;"><i class="fas fa-palette"></i> ${a.dye_color} Dye</div>` : ''}
+                            </div>
+                            <div>
+                                <span class="badge" style="background: ${isCheckedIn ? '#22c55e' : '#6b7280'}; color: white;">
+                                    <i class="fas fa-${isCheckedIn ? 'check-circle' : 'clock'}"></i> ${isCheckedIn ? 'Ready' : 'Awaiting Check-in'}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('scheduleList').innerHTML = scheduleHTML;
+                
+            } catch (err) {
+                console.error('Schedule error:', err);
+                document.getElementById('scheduleList').innerHTML = `
+                    <div class="empty-queue">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: #ef4444;"></i>
+                        <p>Unable to load schedule</p>
+                        <p style="font-size: 0.8rem; color: #9ca3af;">${err.message}</p>
+                        <button onclick="loadSchedule()" style="margin-top: 1rem; background: #d4af37; color: #0a0a0a; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-sync-alt"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#22c55e' : type === 'info' ? '#3b82f6' : '#ef4444'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 10px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            `;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function logout() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            if (timerInterval) clearInterval(timerInterval);
+            
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        loadDashboard();
+        refreshInterval = setInterval(loadDashboard, 5000);
+    </script>
+</body>
+</html>

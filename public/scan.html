@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>THE XCLUSIVE | QR Scanner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            font-size: 24px;
+            color: #d4af37;
+        }
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #d4af37;
+            font-size: 28px;
+        }
+        .header p {
+            color: #9ca3af;
+        }
+        .scanner-card {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            margin-bottom: 20px;
+        }
+        .scanner-title {
+            color: #d4af37;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #reader {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .camera-status {
+            text-align: center;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .camera-status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        .camera-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .manual-section {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .manual-title {
+            color: #d4af37;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #0f0f1a;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+        }
+        .result.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            display: block;
+        }
+        .result.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            display: block;
+        }
+        .result.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+            display: block;
+        }
+        .queue-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+        }
+        .queue-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .close-btn {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .header p {
+                font-size: 12px;
+            }
+            .scanner-card, .manual-section {
+                padding: 15px;
+            }
+            input, button {
+                padding: 12px;
+                font-size: 14px;
+            }
+            .queue-number {
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .close-btn {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .queue-number {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="javascript:history.back()" class="close-btn" title="Close">
+        <i class="fas fa-times"></i>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-qrcode"></i> QR Code Scanner</h1>
+            <p>Position the QR code in front of the camera</p>
+        </div>
+
+        <div class="scanner-card">
+            <div class="scanner-title">
+                <i class="fas fa-camera"></i>
+                <strong>Scan QR Code</strong>
+            </div>
+            <div id="reader"></div>
+            <div id="cameraStatus" class="camera-status"></div>
+        </div>
+
+        <div class="manual-section">
+            <div class="manual-title">
+                <i class="fas fa-keyboard"></i>
+                <strong>Or Enter Manually</strong>
+            </div>
+            <input type="text" id="bookingId" placeholder="Enter Booking ID (e.g., 26 or BKG-26)">
+            <button id="manualBtn" onclick="manualCheckIn()">
+                <i class="fas fa-check-circle"></i> Check In
+            </button>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div id="queueInfo" class="queue-info">
+            <i class="fas fa-clock" style="font-size: 32px; color: #d4af37;"></i>
+            <h3>Check-in Successful!</h3>
+            <div class="queue-number" id="queueNumber">-</div>
+            <p>Estimated Wait: <strong id="waitTime">20</strong> minutes</p>
+            <p>Please have a seat. We'll call you when ready.</p>
+        </div>
+    </div>
+
+    <script>
+        let html5QrCode = null;
+        let isScanning = false;
+
+        async function startScanner() {
+            const statusDiv = document.getElementById('cameraStatus');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                statusDiv.innerHTML = '❌ Camera API not supported in this browser';
+                statusDiv.className = 'camera-status error';
+                return;
+            }
+
+            if (html5QrCode === null) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            };
+
+            try {
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    onScanSuccess,
+                    onScanError
+                );
+                isScanning = true;
+                statusDiv.innerHTML = '✅ Camera active - Ready to scan QR code';
+                statusDiv.className = 'camera-status success';
+            } catch (err) {
+                console.error('Camera error:', err);
+                statusDiv.innerHTML = '❌ Cannot access camera. Please allow camera permissions.';
+                statusDiv.className = 'camera-status error';
+                
+                try {
+                    await html5QrCode.start(
+                        { facingMode: "user" },
+                        config,
+                        onScanSuccess,
+                        onScanError
+                    );
+                    isScanning = true;
+                    statusDiv.innerHTML = '✅ Camera active (front camera)';
+                    statusDiv.className = 'camera-status success';
+                } catch (err2) {
+                    statusDiv.innerHTML = '❌ No camera found. Please use manual entry.';
+                }
+            }
+        }
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            if (!isScanning) return;
+            
+            console.log('✅ QR Code detected:', decodedText);
+            
+            if (html5QrCode && isScanning) {
+                await html5QrCode.stop();
+                isScanning = false;
+                document.getElementById('cameraStatus').innerHTML = '✅ QR Code detected! Processing...';
+            }
+            
+            await performCheckIn(decodedText);
+            
+            setTimeout(() => {
+                if (!isScanning) {
+                    startScanner();
+                }
+            }, 5000);
+        }
+
+        function onScanError(errorMessage) {
+            console.log('Scanning...', errorMessage);
+        }
+
+        async function manualCheckIn() {
+            const input = document.getElementById('bookingId').value.trim();
+            if (!input) {
+                showResult('error', '❌ Please enter a Booking ID');
+                return;
+            }
+            
+            const btn = document.getElementById('manualBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            await performCheckIn(input);
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Check In';
+        }
+
+        async function performCheckIn(input) {
+            let numericId = input.replace('BKG-', '').replace('BKG', '').replace(/[^0-9]/g, '');
+            
+            if (!numericId) {
+                showResult('error', '❌ Invalid Booking ID format. Please use numbers only (e.g., 26)');
+                return;
+            }
+            
+            const qrData = JSON.stringify({ id: parseInt(numericId) });
+            
+            try {
+                const response = await fetch('/api/check-in', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ qrData: qrData })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (data.already_checked_in) {
+                        showResult('warning', `⚠️ Already Checked In\n\nBooking #${numericId} has already been checked in.`);
+                    } else {
+                        showResult('success', `✅ Check-in Successful!\n\nBooking #${numericId} has been checked in.`);
+                        document.getElementById('queueNumber').innerHTML = data.queue_number;
+                        document.getElementById('waitTime').innerHTML = data.estimated_wait || 20;
+                        document.getElementById('queueInfo').style.display = 'block';
+                        document.getElementById('bookingId').value = '';
+                    }
+                } else if (response.status === 404) {
+                    showResult('error', `❌ Booking ID #${numericId} Not Found\n\nPlease check the Booking ID and try again.`);
+                } else if (response.status === 400) {
+                    showResult('error', `❌ Invalid Request\n\n${data.error || 'Please check your input.'}`);
+                } else if (data.error && data.error.includes('already checked in')) {
+                    showResult('warning', `⚠️ Already Checked In\n\nBooking #${numericId} has already been checked in.`);
+                } else {
+                    showResult('error', `❌ Check-in Failed\n\n${data.error || 'Please contact reception for assistance.'}`);
+                }
+            } catch (err) {
+                console.error('Check-in error:', err);
+                showResult('error', '❌ Connection Error\n\nUnable to connect to server. Please try again.');
+            }
+        }
+
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message.replace(/\n/g, '<br>');
+            resultDiv.style.display = 'block';
+            
+            if (type === 'error' || type === 'warning') {
+                document.getElementById('queueInfo').style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 8000);
+        }
+
+        document.getElementById('bookingId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                manualCheckIn();
+            }
+        });
+
+        startScanner();
+
+        window.addEventListener('beforeunload', async () => {
+            if (html5QrCode && isScanning) {
+                try {
+                    await html5QrCode.stop();
+                } catch(e) {}
+            }
+        });
+    </script>
+</body>
+</html>

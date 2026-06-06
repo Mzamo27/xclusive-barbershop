@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>The Xclusive Barbershop | My Bookings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* QR Code Modal Styles */
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+        }
+        .qr-modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .qr-modal-content .close-qr {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: 0.2s;
+        }
+        .qr-modal-content .close-qr:hover {
+            color: #d4af37;
+        }
+        .qr-code-image {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+            border: 3px solid #d4af37;
+            border-radius: 15px;
+            padding: 10px;
+            background: white;
+        }
+        .btn-download {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-download:hover {
+            background: #16a34a;
+            transform: scale(1.02);
+        }
+        .btn-close {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-close:hover {
+            background: #5a6268;
+            transform: scale(1.02);
+        }
+        .qr-info {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 15px;
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+        .qr-info i {
+            color: #d4af37;
+            margin-right: 5px;
+        }
+        .btn-qr-small {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #1a1a2e;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        .booking-details-box {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        .booking-details-box p {
+            margin: 8px 0;
+            color: #e5e7eb;
+        }
+        .booking-details-box strong {
+            color: #d4af37;
+        }
+        
+        /* Self Check-in Modal */
+        .checkin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10002;
+            justify-content: center;
+            align-items: center;
+        }
+        .checkin-modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .checkin-modal-content .close-checkin {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: 0.2s;
+        }
+        .checkin-modal-content .close-checkin:hover {
+            color: #d4af37;
+        }
+        .btn-checkin {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .btn-checkin:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+        .btn-checkin:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+        
+        /* Mobile responsive additions */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 0.8rem 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .logo {
+                order: 0;
+                flex: 1;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.6rem;
+            }
+            
+            .user-section {
+                order: 2;
+            }
+            
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .btn-login, .btn-logout {
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem 0;
+                order: 3;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 0.5rem;
+            }
+            
+            .bookings-header {
+                padding: 2rem 1rem;
+            }
+            
+            .bookings-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .bookings-header p {
+                font-size: 0.8rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .data-table th, 
+            .data-table td {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .btn-qr-small, .btn-warning, .btn-danger {
+                width: 100%;
+                margin: 2px 0;
+                font-size: 0.7rem;
+            }
+            
+            .qr-modal-content, .checkin-modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .qr-code-image {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .booking-details-box p {
+                font-size: 0.8rem;
+            }
+            
+            .btn-download, .btn-close {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-section .social-icons {
+                justify-content: center;
+            }
+            
+            .social-icons a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            .modal-content select, 
+            .modal-content input {
+                font-size: 14px;
+                padding: 0.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.5rem;
+            }
+            
+            .user-greeting {
+                display: none;
+            }
+            
+            .bookings-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .data-table th, 
+            .data-table td {
+                padding: 0.4rem;
+                font-size: 0.65rem;
+            }
+            
+            .status-badge {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .qr-code-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .booking-details-box {
+                padding: 8px;
+            }
+            
+            .booking-details-box p {
+                font-size: 0.7rem;
+                margin: 5px 0;
+            }
+            
+            .qr-info {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="cookieConsent" style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    border-top: 2px solid #d4af37;
+    padding: 15px 20px;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        <div style="flex: 1;">
+            <i class="fas fa-cookie-bite" style="color: #d4af37; margin-right: 10px;"></i>
+            <strong style="color: white;">🍪 We Use Cookies!</strong>
+            <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 0.85rem;">
+                We use cookies to remember your login, save your preferences, and improve your experience. 
+                By using our site, you agree to our use of cookies.
+            </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="declineCookies" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 500;">Decline</button>
+            <button id="acceptCookies" style="background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%); border: none; color: #0a0a0a; padding: 8px 25px; border-radius: 30px; cursor: pointer; font-weight: 600;">Accept All</button>
+        </div>
+    </div>
+</div>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-modal-content">
+            <span class="close-qr" onclick="closeQRModal()">&times;</span>
+            <h3><i class="fas fa-qrcode"></i> Your Check-in QR Code</h3>
+            <p style="color: #9ca3af;">Show this code at the reception to check in</p>
+            
+            <img id="qrCodeImage" class="qr-code-image" src="" alt="QR Code">
+            
+            <div class="booking-details-box">
+                <p><strong>📋 Booking ID:</strong> <span id="qrBookingId" style="color: #d4af37; font-weight: bold;"></span></p>
+                <p><strong>👤 Customer:</strong> <span id="qrCustomerName"></span></p>
+                <p><strong>✂️ Service:</strong> <span id="qrServiceName"></span></p>
+                <p><strong>📅 Date & Time:</strong> <span id="qrDateTime"></span></p>
+            </div>
+            
+            <div class="qr-info">
+                <i class="fas fa-info-circle"></i> Valid until 30 minutes after appointment time
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="btn-download" onclick="downloadQRCode()">
+                    <i class="fas fa-download"></i> Download QR Code
+                </button>
+                <button class="btn-close" onclick="closeQRModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Self Check-in Modal -->
+    <div id="checkinModal" class="checkin-modal">
+        <div class="checkin-modal-content">
+            <span class="close-checkin" onclick="closeCheckinModal()">&times;</span>
+            <h3><i class="fas fa-calendar-check"></i> Self Check-in</h3>
+            <p style="color: #9ca3af; margin-bottom: 15px;">Check yourself in using your Booking ID</p>
+            
+            <div class="booking-details-box" style="text-align: center;">
+                <p><strong>Booking ID:</strong> <span id="checkinBookingId" style="color: #d4af37; font-weight: bold;"></span></p>
+                <p><strong>Customer:</strong> <span id="checkinCustomerName"></span></p>
+                <p><strong>Service:</strong> <span id="checkinServiceName"></span></p>
+                <p><strong>Date & Time:</strong> <span id="checkinDateTime"></span></p>
+            </div>
+            
+            <button class="btn-checkin" id="confirmCheckinBtn" onclick="confirmSelfCheckin()">
+                <i class="fas fa-check-circle"></i> Confirm Check-in
+            </button>
+            <div id="checkinMsg" style="margin-top: 15px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo">
+            </div>
+            <div class="logo-text">
+                <h1><i class="fas fa-crown"></i> THE XCLUSIVE</h1>
+                <p>BARBERSHOP • PREMIUM GROOMING</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="my-bookings.html" class="active">My Bookings</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+        </ul>
+        <div class="user-section">
+            <div class="user-greeting" id="userGreeting"></div>
+            <a href="login.html" class="btn-login" id="loginBtn"><i class="fas fa-user"></i> Sign In</a>
+            <button class="btn-logout hidden" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="bookings-header">
+        <h1>My <span class="highlight">Appointments</span></h1>
+        <p>View and manage all your upcoming appointments</p>
+        <div style="margin-top: 0.5rem; font-size: 0.8rem;"><i class="fas fa-clock"></i> Max 5 clients per hour | 24/7 Booking Available</div>
+    </div>
+
+    <div class="container">
+        <div id="bookingsContainer" class="table-container"></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h2><i class="fas fa-edit"></i> Edit Appointment</h2>
+            <input type="hidden" id="editId">
+            <input type="date" id="editDate">
+            <select id="editTime">
+                <option value="00:00:00">12:00 AM (Midnight)</option>
+                <option value="01:00:00">01:00 AM</option>
+                <option value="02:00:00">02:00 AM</option>
+                <option value="03:00:00">03:00 AM</option>
+                <option value="04:00:00">04:00 AM</option>
+                <option value="05:00:00">05:00 AM</option>
+                <option value="06:00:00">06:00 AM</option>
+                <option value="07:00:00">07:00 AM</option>
+                <option value="08:00:00">08:00 AM</option>
+                <option value="09:00:00">09:00 AM</option>
+                <option value="10:00:00">10:00 AM</option>
+                <option value="11:00:00">11:00 AM</option>
+                <option value="12:00:00">12:00 PM (Noon)</option>
+                <option value="13:00:00">01:00 PM</option>
+                <option value="14:00:00">02:00 PM</option>
+                <option value="15:00:00">03:00 PM</option>
+                <option value="16:00:00">04:00 PM</option>
+                <option value="17:00:00">05:00 PM</option>
+                <option value="18:00:00">06:00 PM</option>
+                <option value="19:00:00">07:00 PM</option>
+                <option value="20:00:00">08:00 PM</option>
+                <option value="21:00:00">09:00 PM</option>
+                <option value="22:00:00">10:00 PM</option>
+                <option value="23:00:00">11:00 PM</option>
+            </select>
+            <div class="payment-info" style="margin: 1rem 0;">
+                <i class="fas fa-info-circle"></i> Note: Maximum 5 clients per hour | 24/7 Booking for testing
+            </div>
+            <button class="btn-primary" onclick="saveEdit()" style="width:100%">Save Changes</button>
+            <div id="editMsg" style="margin-top:1rem; text-align:center;"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-cut"></i> THE XCLUSIVE</h3>
+                <p>Premium barbershop specializing in precision fades, expert dreadlocks maintenance & custom hair dye colors.</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><i class="fas fa-chevron-right"></i> <a href="index.html">Home</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="services.html">Our Services</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="my-bookings.html">My Bookings</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="login.html">Sign In</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 121 Helen Joseph Rd, Bulwer, Durban</p>
+                <p><i class="fas fa-phone"></i> +27 31 123 4567</p>
+                <p><i class="fab fa-whatsapp"></i> +27 71 234 5678</p>
+                <p><i class="fas fa-envelope"></i> info@xclusivebarbershop.co.za</p>
+            </div>
+            <div class="footer-section">
+                <h3>Opening Hours</h3>
+                <p><i class="fas fa-clock"></i> Monday - Friday: 9am - 7pm</p>
+                <p><i class="fas fa-clock"></i> Saturday: 9am - 5pm</p>
+                <p><i class="fas fa-clock"></i> Sunday: Closed</p>
+                <p><i class="fas fa-credit-card"></i> Cash & Card Accepted</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 THE XCLUSIVE Barbershop | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // ============ MOBILE MENU TOGGLE ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (navbar && navLinks && !document.querySelector('.mobile-menu-btn')) {
+                const menuBtn = document.createElement('button');
+                menuBtn.className = 'mobile-menu-btn';
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                navbar.insertBefore(menuBtn, navLinks);
+                
+                menuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                });
+                
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('show');
+                    });
+                });
+            }
+        });
+
+        let editingId = null;
+        let currentCheckinBooking = null;
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+        
+        function formatTime(timeString) {
+            if (!timeString) return '';
+            const [hour, minute] = timeString.split(':');
+            let h = parseInt(hour);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${minute} ${ampm}`;
+        }
+        
+        function formatDateTime(date, time) {
+            return `${formatDate(date)} at ${formatTime(time)}`;
+        }
+        
+        // Generate QR Code for appointment
+        async function generateQRCode(appointmentId, customerName, serviceName, appointmentDate, appointmentTime) {
+            const token = getToken();
+            if (!token) {
+                alert('Please login first');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/appointments/${appointmentId}/generate-qr`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('qrCodeImage').src = data.qrCode;
+                    document.getElementById('qrBookingId').innerText = `BKG-${appointmentId}`;
+                    document.getElementById('qrCustomerName').innerText = customerName;
+                    document.getElementById('qrServiceName').innerText = serviceName;
+                    document.getElementById('qrDateTime').innerText = formatDateTime(appointmentDate, appointmentTime);
+                    document.getElementById('qrModal').style.display = 'flex';
+                } else {
+                    alert('Failed to generate QR code: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error('QR generation error:', err);
+                alert('Error generating QR code. Please try again.');
+            }
+        }
+        
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+        
+        function downloadQRCode() {
+            const qrImage = document.getElementById('qrCodeImage');
+            const link = document.createElement('a');
+            link.download = 'xclusive_qrcode.png';
+            link.href = qrImage.src;
+            link.click();
+        }
+        
+        // Self Check-in Function
+        function openSelfCheckin(booking) {
+            currentCheckinBooking = booking;
+            document.getElementById('checkinBookingId').innerText = `BKG-${booking.id}`;
+            document.getElementById('checkinCustomerName').innerText = booking.customer_name;
+            document.getElementById('checkinServiceName').innerText = booking.service_name;
+            document.getElementById('checkinDateTime').innerText = formatDateTime(booking.appointment_date, booking.appointment_time);
+            document.getElementById('checkinModal').style.display = 'flex';
+            document.getElementById('checkinMsg').innerHTML = '';
+        }
+        
+        function closeCheckinModal() {
+            document.getElementById('checkinModal').style.display = 'none';
+            currentCheckinBooking = null;
+        }
+        
+        async function confirmSelfCheckin() {
+            if (!currentCheckinBooking) return;
+            
+            const btn = document.getElementById('confirmCheckinBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            document.getElementById('checkinMsg').innerHTML = '<span style="color:#d4af37;">⏳ Checking you in...</span>';
+            
+            const qrData = JSON.stringify({ id: currentCheckinBooking.id });
+            
+            try {
+                const response = await fetch('/api/check-in', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ qrData: qrData })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (data.already_checked_in) {
+                        document.getElementById('checkinMsg').innerHTML = `<span style="color:#22c55e;">✅ ${data.message}</span>`;
+                    } else {
+                        document.getElementById('checkinMsg').innerHTML = `<span style="color:#22c55e;">✅ ${data.message}<br>Queue Number: ${data.queue_number}</span>`;
+                        setTimeout(() => {
+                            closeCheckinModal();
+                            loadBookings();
+                        }, 2000);
+                    }
+                } else {
+                    document.getElementById('checkinMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Check-in failed'}</span>`;
+                }
+            } catch (err) {
+                console.error('Check-in error:', err);
+                document.getElementById('checkinMsg').innerHTML = '<span style="color:#ef4444;">❌ Connection error. Please try again.</span>';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Confirm Check-in';
+            }
+        }
+        
+        async function loadBookings() {
+            const user = getCurrentUser();
+            if (!user) {
+                document.getElementById('bookingsContainer').innerHTML = '<div class="empty-state"><i class="fas fa-calendar-alt"></i><h3>Please Login</h3><p>You need to be logged in to view your bookings.</p><a href="login.html">Login Here</a></div>';
+                return;
+            }
+            
+            const token = getToken();
+            const res = await fetch('/api/my-appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+            const allBookings = await res.json();
+            
+            const activeBookings = allBookings.filter(booking => booking.status !== 'cancelled');
+            
+            if (activeBookings.length === 0) {
+                document.getElementById('bookingsContainer').innerHTML = '<div class="empty-state"><i class="fas fa-calendar-plus"></i><h3>No Active Bookings</h3><p>You have no active appointments. Book your first appointment now!</p><a href="services.html">Book Your First Appointment</a></div>';
+                return;
+            }
+            
+            document.getElementById('bookingsContainer').innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Checked In</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${activeBookings.map(booking => `
+                            <tr>
+                                <td><strong>${escapeHtml(booking.service_name)}</strong>${booking.dye_color ? `<br><small style="color:#d4af37;">🎨 ${booking.dye_color} Dye</small>` : ''}</td>
+                                <td>${formatDate(booking.appointment_date)}</td>
+                                <td>${formatTime(booking.appointment_time)}</td>
+                                <td style="color:#d4af37;">R${booking.service_price}</td>
+                                <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+                                <td>${booking.checked_in ? '<span class="badge-success badge">✅ Checked In</span>' : '<span class="badge-warning badge">⏳ Not Checked</span>'}</td>
+                                <td class="action-buttons">
+                                    ${!booking.checked_in && booking.status === 'confirmed' ? 
+                                        `<button class="btn-success" onclick="openSelfCheckin(${JSON.stringify(booking).replace(/"/g, '&quot;')})" style="background:#22c55e; margin-bottom:5px;">
+                                            <i class="fas fa-check-circle"></i> Check In Now
+                                        </button>` : ''
+                                    }
+                                    <button class="btn-qr-small" onclick="generateQRCode(${booking.id}, '${escapeHtml(booking.customer_name)}', '${escapeHtml(booking.service_name)}', '${booking.appointment_date}', '${booking.appointment_time}')">
+                                        <i class="fas fa-qrcode"></i> Show QR
+                                    </button>
+                                    <button class="btn-warning" onclick="openEditModal(${booking.id}, '${booking.appointment_date}', '${booking.appointment_time}')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn-danger" onclick="cancelBooking(${booking.id})">
+                                        <i class="fas fa-trash"></i> Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="booking-summary"><i class="fas fa-money-bill-wave"></i> Pay at the barbershop after your service</div>
+                <div class="booking-summary" style="margin-top: 10px; background: #e8f5e9;">
+                    <i class="fas fa-check-circle"></i> Click "Check In Now" when you arrive at the shop!
+                </div>
+            `;
+        }
+        
+        function openEditModal(id, date, time) {
+            editingId = id;
+            const cleanDate = date.split('T')[0];
+            document.getElementById('editId').value = id;
+            document.getElementById('editDate').value = cleanDate;
+            document.getElementById('editTime').value = time;
+            document.getElementById('editModal').style.display = 'flex';
+            document.getElementById('editMsg').innerHTML = '';
+        }
+        
+        async function saveEdit() {
+            const date = document.getElementById('editDate').value;
+            const time = document.getElementById('editTime').value;
+            
+            if (!date) {
+                document.getElementById('editMsg').innerHTML = '<span style="color:#ef4444;">Please select a date</span>';
+                return;
+            }
+            
+            const token = getToken();
+            document.getElementById('editMsg').innerHTML = '<span style="color:#d4af37;">Checking availability...</span>';
+            
+            try {
+                const response = await fetch(`/api/appointments/${editingId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ appointment_date: date, appointment_time: time })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('editMsg').innerHTML = '<span style="color:#22c55e;">✅ Updated successfully!</span>';
+                    setTimeout(() => {
+                        closeEditModal();
+                        loadBookings();
+                    }, 1500);
+                } else {
+                    document.getElementById('editMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Update failed'}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('editMsg').innerHTML = '<span style="color:#ef4444;">❌ Network error</span>';
+            }
+        }
+        
+        async function cancelBooking(id) {
+            if (!confirm('Are you sure you want to cancel this appointment?')) return;
+            
+            const token = getToken();
+            try {
+                const response = await fetch(`/api/appointments/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('✅ Appointment cancelled successfully');
+                    loadBookings();
+                } else {
+                    alert('❌ Failed to cancel appointment');
+                }
+            } catch (error) {
+                alert('❌ Network error');
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editMsg').innerHTML = '';
+        }
+        
+        loadBookings();
+        updateUserUI();
+        
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+            if (event.target.classList.contains('qr-modal')) {
+                event.target.style.display = 'none';
+            }
+            if (event.target.classList.contains('checkin-modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeQRModal();
+                closeEditModal();
+                closeCheckinModal();
+            }
+        });
+        
+        // Cookie Consent Logic
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                document.getElementById('cookieConsent').style.display = 'flex';
+            }
+        }
+        
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieConsent').style.display = 'none';
+            enableCookies();
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            document.getElementById('cookieConsent').style.display = 'none';
+            disableCookies();
+            alert('You have declined cookies. You can still browse but login won\'t be saved.');
+        }
+        
+        function enableCookies() {
+            localStorage.setItem('cookiesEnabled', 'true');
+        }
+        
+        function disableCookies() {
+            localStorage.setItem('cookiesEnabled', 'false');
+            fetch('/api/clear-cookies', { method: 'POST' });
+        }
+        
+        document.getElementById('acceptCookies').addEventListener('click', acceptCookies);
+        document.getElementById('declineCookies').addEventListener('click', declineCookies);
+        
+        checkCookieConsent();
+    </script>
+    <script src="chat-widget.js"></script>
+</body>
+</html>

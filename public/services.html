@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>The Xclusive Barbershop | Our Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional time picker styling */
+        input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(100%);
+            cursor: pointer;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(100%);
+            cursor: pointer;
+        }
+        .time-note {
+            color: #22c55e;
+            font-size: 0.7rem;
+            margin-top: 5px;
+            display: block;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        select option {
+            background: #0f0f1a;
+        }
+        
+        /* Mobile responsive additions */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 0.8rem 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .logo {
+                order: 0;
+                flex: 1;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.6rem;
+            }
+            
+            .user-section {
+                order: 2;
+            }
+            
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .btn-login, .btn-logout {
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem 0;
+                order: 3;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 0.5rem;
+            }
+            
+            .services-hero {
+                padding: 2rem 1rem;
+            }
+            
+            .services-hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .services-hero p {
+                font-size: 0.8rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .category-filter {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                padding: 0.3rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .service-image-container {
+                height: 200px;
+            }
+            
+            .service-info {
+                padding: 0.8rem;
+            }
+            
+            .service-name {
+                font-size: 1rem;
+            }
+            
+            .service-description {
+                font-size: 0.75rem;
+            }
+            
+            .dye-btn {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.6rem;
+            }
+            
+            .service-price {
+                font-size: 0.9rem;
+            }
+            
+            .book-btn {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.3rem;
+            }
+            
+            .modal-content input, 
+            .modal-content select {
+                padding: 0.7rem;
+                font-size: 14px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-section .social-icons {
+                justify-content: center;
+            }
+            
+            .social-icons a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.5rem;
+            }
+            
+            .user-greeting {
+                display: none;
+            }
+            
+            .services-hero h1 {
+                font-size: 1.2rem;
+            }
+            
+            .services-hero p {
+                font-size: 0.7rem;
+            }
+            
+            .filter-btn {
+                padding: 0.2rem 0.8rem;
+                font-size: 0.65rem;
+            }
+            
+            .service-image-container {
+                height: 180px;
+            }
+            
+            .dye-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .modal-content {
+                padding: 1rem;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="cookieConsent" style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    border-top: 2px solid #d4af37;
+    padding: 15px 20px;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        <div style="flex: 1;">
+            <i class="fas fa-cookie-bite" style="color: #d4af37; margin-right: 10px;"></i>
+            <strong style="color: white;">🍪 We Use Cookies!</strong>
+            <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 0.85rem;">
+                We use cookies to remember your login, save your preferences, and improve your experience. 
+                By using our site, you agree to our use of cookies.
+            </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="declineCookies" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#ef4444'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#ef4444'">Decline</button>
+            <button id="acceptCookies" style="background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%); border: none; color: #0a0a0a; padding: 8px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.2s;">Accept All</button>
+        </div>
+    </div>
+</div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo">
+            </div>
+            <div class="logo-text">
+                <h1><i class="fas fa-crown"></i> THE XCLUSIVE</h1>
+                <p>BARBERSHOP • PREMIUM GROOMING</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html" class="active">Services</a></li>
+            <li><a href="my-bookings.html">My Bookings</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="admin.html" id="adminLink" style="display:none;">Admin</a></li>
+        </ul>
+        <div class="user-section">
+            <div class="user-greeting" id="userGreeting"></div>
+            <a href="login.html" class="btn-login" id="loginBtn"><i class="fas fa-user"></i> Sign In</a>
+            <button class="btn-logout hidden" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="services-hero">
+        <h1>Our <span class="highlight">Premium Services</span></h1>
+        <p>Choose from our wide range of professional grooming services tailored just for you</p>
+        <div style="margin-top: 1rem; font-size: 0.85rem; background: rgba(212,175,55,0.1); display: inline-block; padding: 0.5rem 1rem; border-radius: 30px;">
+            <i class="fas fa-info-circle"></i> Max 5 clients per time slot • 24/7 Booking Available for Testing
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterServices('all')">All Services</button>
+            <button class="filter-btn" onclick="filterServices('Dreadlocks')">Dreadlocks</button>
+            <button class="filter-btn" onclick="filterServices('Fade')">Fades</button>
+            <button class="filter-btn" onclick="filterServices('Beard')">Beard</button>
+            <button class="filter-btn" onclick="filterServices('Classic')">Classic Cuts</button>
+        </div>
+        
+        <div class="services-grid" id="servicesGrid"></div>
+    </div>
+
+    <!-- Booking Modal - UPDATED with Barber Selection -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBookingModal()">&times;</span>
+            <h2><i class="fas fa-calendar-check"></i> Book Appointment</h2>
+            
+            <input type="text" id="selectedService" readonly placeholder="Selected Service" style="background: #0a0a0e; border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 12px; width: 100%; color: white; margin-bottom: 1rem;">
+            
+            <!-- Barber Selection -->
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #d4af37;">
+                    <i class="fas fa-user"></i> Choose Your Barber:
+                </label>
+                <select id="barberStation" required>
+                    <option value="">Select a barber</option>
+                    <option value="1">✂️ Michael - Station 1</option>
+                    <option value="2">✂️ Thabo - Station 2</option>
+                    <option value="3">✂️ James - Station 3</option>
+                </select>
+                <small class="time-note"><i class="fas fa-info-circle"></i> Choose your preferred barber</small>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #d4af37;">
+                    <i class="fas fa-calendar-alt"></i> Select Date:
+                </label>
+                <input type="date" id="bookingDate" min="" required>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #d4af37;">
+                    <i class="fas fa-clock"></i> Select Time (24/7):
+                </label>
+                <input type="time" id="bookingTime" step="3600" required>
+                <small class="time-note"><i class="fas fa-info-circle"></i> 24/7 Booking Available</small>
+            </div>
+            
+            <div class="payment-info">
+                <i class="fas fa-money-bill-wave"></i> Pay at the barbershop after service (Cash or Card)
+                <div style="margin-top: 5px; font-size: 0.75rem;"><i class="fas fa-users"></i> Max 5 clients per time slot</div>
+            </div>
+            
+            <button class="btn-primary" onclick="confirmBooking()" style="width:100%; margin-top: 1rem;">
+                <i class="fas fa-check-circle"></i> Confirm Booking
+            </button>
+            
+            <div id="bookingMsg" style="margin-top:1rem; text-align:center;"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-cut"></i> THE XCLUSIVE</h3>
+                <p>Premium barbershop specializing in precision fades, expert dreadlocks maintenance & custom hair dye colors.</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><i class="fas fa-chevron-right"></i> <a href="index.html">Home</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="services.html">Our Services</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="my-bookings.html">My Bookings</a></p>
+                <p><i class="fas fa-chevron-right"></i> <a href="login.html">Sign In</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 121 Helen Joseph Rd, Bulwer, Durban</p>
+                <p><i class="fas fa-phone"></i> +27 31 123 4567</p>
+                <p><i class="fab fa-whatsapp"></i> +27 71 234 5678</p>
+                <p><i class="fas fa-envelope"></i> info@xclusivebarbershop.co.za</p>
+            </div>
+            <div class="footer-section">
+                <h3>Opening Hours</h3>
+                <p><i class="fas fa-clock"></i> Monday - Friday: 9am - 7pm</p>
+                <p><i class="fas fa-clock"></i> Saturday: 9am - 5pm</p>
+                <p><i class="fas fa-clock"></i> Sunday: Closed</p>
+                <p><i class="fas fa-credit-card"></i> Cash & Card Accepted</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 THE XCLUSIVE Barbershop | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // ============ MOBILE MENU TOGGLE ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (navbar && navLinks && !document.querySelector('.mobile-menu-btn')) {
+                const menuBtn = document.createElement('button');
+                menuBtn.className = 'mobile-menu-btn';
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                navbar.insertBefore(menuBtn, navLinks);
+                
+                menuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                });
+                
+                // Close mobile menu when clicking a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('show');
+                    });
+                });
+            }
+        });
+
+        let selectedServiceObj = null;
+        let selectedDye = null;
+        let allServices = [];
+        let dyeColorsList = [];
+        
+        // Set min date for booking (cannot book past dates)
+        const today = new Date().toISOString().split('T')[0];
+        if (document.getElementById('bookingDate')) {
+            document.getElementById('bookingDate').min = today;
+        }
+        
+        // Hardcoded fallback images (used only if service has no image_url in DB)
+        const serviceImages = {
+            'Brush Cut': ['/uploads/@kingschultz3.jpg', '/uploads/Short-Buzz-Cut-Fade.webp', '/uploads/xzoy89s8mnza1.jpg'],
+            'Dreadlocks Installation': ['/uploads/2-short-freeform-locs-for-men.jpg', '/uploads/41-shape-up-locs.webp', '/uploads/45-locs-with-line-up.webp'],
+            'Dreadlocks Retwist': ['/uploads/1000s.jpg', '/uploads/retwisting-dreadlocks.jpg'],
+            'Dreadlocks Styling': ['/uploads/a9e2894017f4ce9df7c931105743f421.jpg', '/uploads/Twist_and_dread.webp'],
+            'Low Fade': ['/uploads/6-fade-with-a-shaved-part.webp', '/uploads/6998a8d55f8e08ecf3543909_ChatGPT-Image-Aug-26-2025-09_13_16-PM.webp', '/uploads/Swanky-Malone---Low-Taper-Fade-Blog_3324f34e-7415-4c7d-ad0f-0dca24ef79a4.webp'],
+            'Mid Fade': ['/uploads/Crew-Cut-Mid-Fade_600x600.webp', '/uploads/Mid-Fade-with-Curls.webp', '/uploads/Fine-Curls-with-Vivid-Mid-Fade.jpg'],
+            'High Fade': ['/uploads/pointed_drop_fade.original.jpg', '/uploads/Temple-Fade_600x600.webp', '/uploads/high-taper-fade-black-male-2-600x375.webp', '/uploads/high-taper-fade-black-male.webp'],
+            'Taper Fade': ['/uploads/68ec4c53dc13f1c88bf4651268c4d325.jpg', '/uploads/Low_Taper_Fade_Fluffy_Hair.webp'],
+            'Burst Fade': ['/uploads/Bald_Burst_Fade_1-1024x1024.jpg', '/uploads/Burst-Fade-Buzz-Cut.webp', '/uploads/burst-fade-haircut-textured-crop.jpg'],
+            'Blade Cut': ['/uploads/360_F_813405255_QH54qgZsqpuUBj7UjpFEiJnezjOgZDJz.jpg', '/uploads/Shaved-Head-43-650x650.jpg', '/uploads/Shaved-Head-44-650x650.jpg'],
+            'Beard Trim': ['/uploads/clean-shaven.webp', '/uploads/Shaved-Head-44-650x650.jpg'],
+            'Beard + Hot Towel': ['/uploads/smiling-man-getting-a-hot-towel-shave-1.jpg', '/uploads/hot-towel-shave.webp']
+        };
+        
+        // Get fallback images from hardcoded object
+        function getFallbackImages(serviceName) {
+            for (const [key, images] of Object.entries(serviceImages)) {
+                if (serviceName.includes(key) || key.includes(serviceName)) {
+                    return images;
+                }
+            }
+            return ['/uploads/6-fade-with-a-shaved-part.webp'];
+        }
+        
+        async function loadServices() {
+            try {
+                const response = await fetch('/api/services');
+                const data = await response.json();
+                allServices = data.services;
+                dyeColorsList = data.dyeColors;
+                renderServices(allServices);
+            } catch (error) {
+                console.error('Error loading services:', error);
+                document.getElementById('servicesGrid').innerHTML = '<div style="text-align:center;padding:3rem;color:#ef4444;">Error loading services</div>';
+            }
+        }
+        
+        function filterServices(category) {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            
+            if (category === 'all') {
+                renderServices(allServices);
+            } else {
+                renderServices(allServices.filter(s => s.category === category));
+            }
+        }
+        
+        function renderServices(services) {
+            const grid = document.getElementById('servicesGrid');
+            if (!services || services.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;padding:3rem;">No services found</div>';
+                return;
+            }
+            
+            grid.innerHTML = services.map((service, index) => {
+                // ---- PRIORITY: Use database image_url if available ----
+                let mainImage;
+                let rotatingImages = [];
+                if (service.image_url && service.image_url !== 'null' && service.image_url.trim() !== '') {
+                    mainImage = service.image_url;
+                    // No rotation for custom uploaded images (optional)
+                    rotatingImages = [];
+                } else {
+                    const fallback = getFallbackImages(service.name);
+                    mainImage = fallback[0];
+                    rotatingImages = fallback.slice(1);
+                }
+                
+                let rotatingHtml = '';
+                if (rotatingImages.length > 0) {
+                    rotatingHtml = rotatingImages.map((img, idx) => 
+                        `<img src="${img}" class="service-rotating-img ${idx === 0 ? 'active' : ''}" alt="${service.name}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 0.5s;">`
+                    ).join('');
+                }
+                
+                let dyeHtml = '';
+                if (service.has_dye && dyeColorsList) {
+                    // Use price_with_dye from database if available, otherwise fallback (price_no_dye + 100)
+                    const dyePrice = service.price_with_dye ? service.price_with_dye : (service.price_no_dye + 100);
+                    dyeHtml = `<div class="dye-buttons">
+                        <button class="dye-btn" onclick="selectDye(this, 'None', ${service.price_no_dye}, '${service.id}')">⚫ No Dye - R${service.price_no_dye}</button>
+                        ${dyeColorsList.map(color => {
+                            let style = '';
+                            let emoji = '';
+                            if (color.name === 'Burgundy Red') {
+                                style = 'style="background:#8B0000;color:white;"';
+                                emoji = '🍷';
+                            } else if (color.name === 'Platinum Blonde') {
+                                style = 'style="background:#E6BE8A;color:#1a1a2e;"';
+                                emoji = '💛';
+                            } else if (color.name === 'Black') {
+                                style = 'style="background:#1a1a1a;color:white;"';
+                                emoji = '🖤';
+                            }
+                            return `<button class="dye-btn" ${style} onclick="selectDye(this, '${color.name}', ${dyePrice}, '${service.id}')">${emoji} ${color.name} Dye - R${dyePrice}</button>`;
+                        }).join('')}
+                    </div>`;
+                }
+                
+                const displayPrice = service.has_dye ? `From R${service.price_no_dye}` : `R${service.price_no_dye}`;
+                
+                return `
+                    <div class="service-card" data-id="${service.id}" data-name="${service.name}" data-price="${service.price_no_dye}" data-has-dye="${service.has_dye}">
+                        <div class="service-image-container" style="position:relative; width:100%; height:250px; overflow:hidden;">
+                            <img src="${mainImage}" class="service-image" alt="${service.name}" style="width:100%; height:100%; object-fit:cover;">
+                            ${rotatingHtml}
+                        </div>
+                        <div class="service-info">
+                            <h3 class="service-name">${service.name}</h3>
+                            <p class="service-description">${service.description || 'Professional grooming service'}</p>
+                            ${dyeHtml}
+                            <div class="service-price" id="price-${service.id}">${displayPrice}</div>
+                            <button class="book-btn" onclick="prepareBooking('${service.id}', '${service.name}', ${service.price_no_dye}, ${service.has_dye})">
+                                <i class="fas fa-calendar-check"></i> Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Optional carousel for rotating images (only if there are multiple fallback images)
+            setTimeout(() => {
+                document.querySelectorAll('.service-card').forEach(card => {
+                    const imgs = card.querySelectorAll('.service-rotating-img');
+                    if (imgs.length) {
+                        let idx = 0;
+                        setInterval(() => {
+                            imgs[idx].style.opacity = '0';
+                            idx = (idx + 1) % imgs.length;
+                            imgs[idx].style.opacity = '1';
+                        }, 3000);
+                    }
+                });
+            }, 500);
+        }
+        
+        function selectDye(btn, dyeName, price, serviceId) {
+            const parentDiv = btn.parentElement;
+            if (parentDiv) {
+                parentDiv.querySelectorAll('.dye-btn').forEach(b => b.classList.remove('selected'));
+            }
+            btn.classList.add('selected');
+            selectedDye = { name: dyeName, price: price };
+            document.getElementById(`price-${serviceId}`).innerHTML = `R${price}`;
+        }
+        
+        function prepareBooking(serviceId, serviceName, defaultPrice, hasDye) {
+            const user = getCurrentUser();
+            if (!user) {
+                if (confirm('Please login to book an appointment')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            
+            let finalPrice = defaultPrice;
+            let dyeInfo = '';
+            if (hasDye && selectedDye && selectedDye.name !== 'None') {
+                finalPrice = selectedDye.price;
+                dyeInfo = ` with ${selectedDye.name} Dye`;
+            }
+            
+            selectedServiceObj = { 
+                name: serviceName + dyeInfo, 
+                price: finalPrice, 
+                dye: (hasDye && selectedDye && selectedDye.name !== 'None') ? selectedDye.name : null 
+            };
+            
+            document.getElementById('selectedService').value = `${selectedServiceObj.name} - R${finalPrice}`;
+            document.getElementById('bookingModal').style.display = 'flex';
+            
+            // Reset dye selection for next time
+            if (hasDye) {
+                selectedDye = null;
+            }
+        }
+        
+        async function confirmBooking() {
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('bookingTime').value;
+            const barberStation = document.getElementById('barberStation').value;
+            
+            if (!date) {
+                document.getElementById('bookingMsg').innerHTML = '<span style="color:#ef4444;">❌ Please select a date</span>';
+                return;
+            }
+            
+            if (!time) {
+                document.getElementById('bookingMsg').innerHTML = '<span style="color:#ef4444;">❌ Please select a time</span>';
+                return;
+            }
+            
+            if (!barberStation) {
+                document.getElementById('bookingMsg').innerHTML = '<span style="color:#ef4444;">❌ Please select a barber</span>';
+                return;
+            }
+            
+            // Convert time to HH:MM:SS format for database
+            const timeWithSeconds = time + ':00';
+            
+            const token = getToken();
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            document.getElementById('bookingMsg').innerHTML = '<span style="color:#d4af37;">⏳ Checking availability...</span>';
+            
+            try {
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        service_name: selectedServiceObj.name,
+                        service_price: selectedServiceObj.price,
+                        dye_color: selectedServiceObj.dye,
+                        appointment_date: date,
+                        appointment_time: timeWithSeconds,
+                        barber_station: parseInt(barberStation)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.getElementById('bookingMsg').innerHTML = '<span style="color:#22c55e;">✅ Appointment Confirmed Successfully!</span>';
+                    setTimeout(() => {
+                        closeBookingModal();
+                        document.getElementById('bookingMsg').innerHTML = '';
+                        document.getElementById('bookingDate').value = '';
+                        document.getElementById('bookingTime').value = '';
+                        document.getElementById('barberStation').value = '';
+                        window.location.href = 'my-bookings.html';
+                    }, 1500);
+                } else {
+                    document.getElementById('bookingMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Booking failed'}</span>`;
+                }
+            } catch (error) {
+                console.error('Booking error:', error);
+                document.getElementById('bookingMsg').innerHTML = '<span style="color:#ef4444;">❌ Network error. Please try again.</span>';
+            }
+        }
+        
+        function closeBookingModal() { 
+            document.getElementById('bookingModal').style.display = 'none'; 
+            document.getElementById('bookingMsg').innerHTML = '';
+        }
+        
+        // Set min date for booking
+        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+        
+        loadServices();
+        updateUserUI();
+        if (getCurrentUser()?.role === 'admin') document.getElementById('adminLink').style.display = 'block';
+        
+        window.onclick = function(e) { 
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        }
+        
+        // Cookie Consent Logic
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                document.getElementById('cookieConsent').style.display = 'flex';
+            }
+        }
+        
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieConsent').style.display = 'none';
+            enableCookies();
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            document.getElementById('cookieConsent').style.display = 'none';
+            disableCookies();
+            alert('You have declined cookies. You can still browse but login won\'t be saved.');
+        }
+        
+        function enableCookies() {
+            localStorage.setItem('cookiesEnabled', 'true');
+        }
+        
+        function disableCookies() {
+            localStorage.setItem('cookiesEnabled', 'false');
+            fetch('/api/clear-cookies', { method: 'POST' });
+        }
+        
+        document.getElementById('acceptCookies').addEventListener('click', acceptCookies);
+        document.getElementById('declineCookies').addEventListener('click', declineCookies);
+        
+        checkCookieConsent();
+    </script>
+    <script src="chat-widget.js"></script>
+</body>
+</html>

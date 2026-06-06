@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>THE XCLUSIVE | Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0a0a0e 0%, #12121a 100%);
+            border-right: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .sidebar-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-header .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .logo-icon i {
+            font-size: 24px;
+            color: #0a0a0a;
+        }
+        .sidebar-header .logo-text h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+        }
+        .sidebar-header .logo-text p {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        .sidebar-nav {
+            padding: 1.5rem;
+        }
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-item a i {
+            width: 22px;
+            font-size: 1.1rem;
+        }
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+        }
+        .nav-item.active a {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 1.5rem;
+            transition: margin-left 0.3s ease;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .page-title p {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .real-time-clock {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #d4af37;
+        }
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .btn-scan {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+            padding: 10px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        .sidebar-toggle {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: #d4af37;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .sidebar-toggle i {
+            color: #0a0a0a;
+            font-size: 1.2rem;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kpi-icon i {
+            font-size: 1.5rem;
+            color: #d4af37;
+        }
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .kpi-label {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .chart-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .chart-card h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+        canvas {
+            max-height: 250px;
+        }
+        .table-container {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            overflow-x: auto;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            -webkit-overflow-scrolling: touch;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .data-table td {
+            padding: 1rem;
+            color: #e5e7eb;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+        .data-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941a 100%);
+            color: #0a0a0a;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        .btn-primary:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-info {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge-success { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .queue-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #d4af37;
+        }
+        .queue-card.serving {
+            border-left-color: #22c55e;
+            background: linear-gradient(135deg, #1a2e1a 0%, #16213e 100%);
+        }
+        .sensors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+        }
+        .service-card {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 16px;
+            padding: 1rem;
+            border-left: 4px solid #d4af37;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            overflow: hidden;
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+            background: rgba(26, 26, 46, 1);
+        }
+        .service-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: rgba(212, 175, 55, 0.05);
+            display: block;
+        }
+        .service-img-placeholder {
+            width: 100%;
+            height: 150px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .service-img-placeholder i {
+            font-size: 2rem;
+            color: #d4af37;
+        }
+        .service-info {
+            flex: 1;
+            display: block;
+            width: 100%;
+        }
+        .service-info h4 {
+            color: #d4af37;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .service-info p {
+            color: #9ca3af;
+            font-size: 0.75rem;
+            margin: 0.3rem 0;
+        }
+        .service-info .service-status {
+            margin: 0.5rem 0;
+        }
+        .service-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .service-actions button {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+        }
+        .sensor-card {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 16px;
+            padding: 1rem;
+            border-left: 4px solid #d4af37;
+        }
+        .barber-card {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #d4af37;
+        }
+        .barber-info h4 {
+            color: #d4af37;
+            margin-bottom: 0.5rem;
+        }
+        .barber-info p {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin: 0.2rem 0;
+        }
+        .barber-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .status-select {
+            background: #1a1a2e;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 0.3rem 0.6rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 8px;
+            width: 100%;
+        }
+        .status-select:hover {
+            border-color: #d4af37;
+        }
+        .sensor-online { color: #22c55e; }
+        .sensor-offline { color: #ef4444; }
+        .sensor-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .sensor-status-dot.online { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+        .sensor-status-dot.offline { background: #ef4444; }
+        .sensor-status-dot.maintenance { background: #f59e0b; }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        .last-update-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .barber-performance-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #d4af37;
+        }
+        select, input, textarea {
+            background: #1a1a2e;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 0.3rem 0.6rem;
+            color: white;
+            cursor: pointer;
+        }
+        select:hover, input:hover, textarea:hover {
+            border-color: #d4af37;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .modal-content h2 {
+            color: #d4af37;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            background: #0a0a0e;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            color: white;
+        }
+        .modal-content textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-content .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+        }
+        .modal-content .checkbox-row input {
+            width: auto;
+            margin: 0;
+        }
+        .modal-content .checkbox-row label {
+            color: #d4af37;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            font-size: 0.85rem;
+        }
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .sidebar-toggle { display: flex; }
+            .top-bar { flex-direction: column; align-items: flex-start; }
+            .user-info { width: 100%; justify-content: space-between; }
+            .real-time-clock { font-size: 0.8rem; padding: 5px 10px; }
+            .btn-scan { padding: 6px 12px; font-size: 0.75rem; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .kpi-value { font-size: 1.3rem; }
+            .charts-row { grid-template-columns: 1fr; }
+            .services-grid, .sensors-grid { grid-template-columns: 1fr; }
+            .data-table th, .data-table td { padding: 0.5rem; font-size: 0.7rem; }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .user-info { flex-wrap: wrap; gap: 10px; }
+            .real-time-clock { order: 2; }
+            .btn-scan { order: 1; width: 100%; justify-content: center; }
+            .user-avatar { order: 3; }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="/uploads/Screenshot%202026-04-24%20005107.png" alt="The Xclusive Barbershop Logo" style="width:150%; height:150%; object-fit:cover; border-radius:50%;">
+                </div>
+                <div class="logo-text">
+                    <h2>THE XCLUSIVE</h2>
+                    <p>Admin Dashboard</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="overview"><a href="#"><i class="fas fa-chart-line"></i> Overview</a></div>
+            <div class="nav-item" data-tab="appointments"><a href="#"><i class="fas fa-calendar"></i> Appointments</a></div>
+            <div class="nav-item" data-tab="queue"><a href="#"><i class="fas fa-users"></i> Queue Management</a></div>
+            <div class="nav-item" data-tab="services"><a href="#"><i class="fas fa-cut"></i> Services</a></div>
+            <div class="nav-item" data-tab="barbers"><a href="#"><i class="fas fa-chair"></i> Barbers</a></div>
+            <div class="nav-item" data-tab="iot"><a href="#"><i class="fas fa-microchip"></i> IoT Sensors</a></div>
+            <div class="nav-item" data-tab="reports"><a href="#"><i class="fas fa-chart-bar"></i> Reports</a></div>
+            <div class="nav-item" data-tab="audit"><a href="#"><i class="fas fa-history"></i> Audit Logs</a></div>
+            <div class="nav-item" data-tab="backup"><a href="#"><i class="fas fa-database"></i> Backup</a></div>
+            <div class="nav-item"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Welcome back, <span id="adminName"></span></p>
+            </div>
+            <div class="user-info">
+                <a href="scan.html" class="btn-scan"><i class="fas fa-qrcode"></i> Scan QR Code (Check-in)</a>
+                <div class="real-time-clock" id="realTimeClock"></div>
+                <div class="user-avatar"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="kpi-grid" id="kpiGrid"></div>
+            <div class="charts-row">
+                <div class="chart-card"><h3><i class="fas fa-chart-line"></i> Booking Trends (Last 7 Days)</h3><canvas id="bookingsChart"></canvas></div>
+                <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Popular Services</h3><canvas id="servicesChart"></canvas></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3>Recent Appointments</h3></div>
+            <div class="table-container">
+                <table class="data-table"><thead><tr><th>ID</th><th>Customer Name</th><th>Service</th><th>Date</th><th>Time</th><th>Price</th><th>Status</th><th>Checked In</th><th>Actions</th></tr></thead><tbody id="recentAppointmentsBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div id="tab-appointments" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3>All Appointments</h3></div>
+            <div class="table-container">
+                <table class="data-table"><thead><tr><th>ID</th><th>Customer Name</th><th>Service</th><th>Date</th><th>Time</th><th>Price</th><th>Status</th><th>Checked In</th><th>Actions</th></tr></thead><tbody id="allAppointmentsBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- Queue Tab (Start Serving button removed) -->
+        <div id="tab-queue" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-users"></i> Live Queue</h3></div>
+            <div id="queueList"></div>
+            <div class="kpi-grid" style="margin-top: 1rem;" id="queueStats"></div>
+        </div>
+
+        <!-- Services Tab -->
+        <div id="tab-services" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-cut"></i> Service Management</h3><button class="btn-primary" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> Add Service</button></div>
+            <div id="servicesList" class="services-grid"></div>
+        </div>
+
+        <!-- Barbers Tab -->
+        <div id="tab-barbers" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-chair"></i> Barber Management</h3><button class="btn-primary" onclick="openAddBarberModal()"><i class="fas fa-plus"></i> Add Barber</button></div>
+            <div id="barbersList" class="sensors-grid"></div>
+        </div>
+
+        <!-- IoT Sensors Tab -->
+        <div id="tab-iot" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-microchip"></i> IoT Device Status</h3><div><span id="iotLastUpdate" class="last-update-badge"><i class="fas fa-sync-alt fa-fw"></i> Loading...</span><button class="btn-primary" onclick="simulateSensors()" style="margin-left: 10px;"><i class="fas fa-sync-alt"></i> Refresh Now</button></div></div>
+            <p style="color: #9ca3af; font-size: 0.8rem; margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Sensors update automatically every 5 seconds (SAST Time)</p>
+            <div id="sensorsList" class="sensors-grid"></div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="tab-reports" class="tab-content">
+            <div class="charts-row">
+                <div class="chart-card"><h3>Revenue by Month</h3><canvas id="revenueChart"></canvas></div>
+                <div class="chart-card"><h3>Barber Performance</h3><div id="barberPerformanceDisplay"></div><canvas id="barberChart" style="display:none;"></canvas></div>
+            </div>
+            <div class="table-container">
+                <table class="data-table"><thead><tr><th>Month</th><th>Total Bookings</th><th>Revenue (R)</th><th>Growth</th></tr></thead><tbody id="reportsBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- Audit Logs Tab -->
+        <div id="tab-audit" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-history"></i> System Audit Logs</h3><button class="btn-primary" onclick="refreshAuditLogs()"><i class="fas fa-refresh"></i> Refresh</button></div>
+            <div class="table-container"><table class="data-table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th><th>IP Address</th></tr></thead><tbody id="auditLogsBody"></tbody></table></div>
+        </div>
+
+        <!-- Backup Tab -->
+        <div id="tab-backup" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3><i class="fas fa-database"></i> Database Backups</h3><button class="btn-primary" onclick="createBackup()"><i class="fas fa-cloud-upload-alt"></i> Create Backup</button></div>
+            <div class="table-container"><table class="data-table"><thead><tr><th>Backup Name</th><th>Size</th><th>Status</th><th>Date</th></tr></thead><tbody id="backupLogsBody"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Service Modal (with image upload and dye price) -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeServiceModal()">&times;</span>
+            <h2 id="serviceModalTitle">Add Service</h2>
+            <input type="hidden" id="serviceId">
+            <input type="hidden" id="existingImageUrl">
+            <input type="text" id="serviceName" placeholder="Service Name" required>
+            <textarea id="serviceDescription" placeholder="Description (optional)"></textarea>
+            <select id="serviceCategory">
+                <option value="Classic">Classic Cuts</option>
+                <option value="Fade">Fades</option>
+                <option value="Dreadlocks">Dreadlocks</option>
+                <option value="Beard">Beard</option>
+                <option value="Color">Color</option>
+            </select>
+            <input type="number" id="servicePrice" placeholder="Price (R) without Dye" required>
+            <div class="checkbox-row">
+                <input type="checkbox" id="serviceHasDye">
+                <label for="serviceHasDye">Has Dye Option</label>
+            </div>
+            <div id="dyePriceGroup" style="display: none;">
+                <input type="number" id="servicePriceWithDye" placeholder="Price (R) with Dye">
+            </div>
+            <div class="form-group">
+                <label>Service Image (JPEG, PNG, WEBP, max 5MB)</label>
+                <input type="file" id="serviceImage" accept="image/jpeg,image/png,image/webp">
+                <div id="currentImagePreview" style="margin-top: 10px; display: none;">
+                    <img id="serviceImagePreview" style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #d4af37;">
+                    <button type="button" class="btn-danger" style="margin-left: 10px;" onclick="removeImage()">Remove</button>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="saveService()" style="width:100%">Save Service</button>
+            <div id="serviceModalMsg" style="margin-top:1rem; text-align:center;"></div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Barber Modal -->
+    <div id="barberModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBarberModal()">&times;</span>
+            <h2 id="barberModalTitle">Add Barber</h2>
+            <input type="hidden" id="barberId">
+            <input type="text" id="barberName" placeholder="Full Name" required>
+            <input type="email" id="barberEmail" placeholder="Email Address" required>
+            <input type="tel" id="barberPhone" placeholder="Phone Number">
+            <select id="barberStation">
+                <option value="1">Station 1</option>
+                <option value="2">Station 2</option>
+                <option value="3">Station 3</option>
+            </select>
+            <input type="password" id="barberPassword" placeholder="Password (required for new barber)">
+            <button class="btn-primary" onclick="saveBarber()" style="width:100%">Save Barber</button>
+            <div id="barberModalMsg" style="margin-top:1rem; text-align:center;"></div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeResetPasswordModal()">&times;</span>
+            <h2>Reset Barber Password</h2>
+            <p style="margin-bottom: 1rem;">Barber: <strong id="resetBarberName"></strong></p>
+            <input type="password" id="newPassword" placeholder="New Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button class="btn-primary" onclick="confirmResetPassword()" style="width:100%">Reset Password</button>
+            <div id="resetPwdMsg" style="margin-top:1rem; text-align:center;"></div>
+        </div>
+    </div>
+
+    <script>
+        let bookingsChart, servicesChart, revenueChart;
+        let queueRefreshInterval, iotAutoRefreshInterval;
+        const pieChartColors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F','#BB8FCE','#85C1E9','#F5B7B1','#A9DFBF'];
+
+        // Hardcoded image fallback (used only if service has no image_url)
+        const serviceImages = {
+            'Brush Cut': ['/uploads/@kingschultz3.jpg', '/uploads/Short-Buzz-Cut-Fade.webp', '/uploads/xzoy89s8mnza1.jpg'],
+            'Dreadlocks Installation': ['/uploads/2-short-freeform-locs-for-men.jpg', '/uploads/41-shape-up-locs.webp', '/uploads/45-locs-with-line-up.webp'],
+            'Dreadlocks Retwist': ['/uploads/1000s.jpg', '/uploads/retwisting-dreadlocks.jpg'],
+            'Dreadlocks Styling': ['/uploads/a9e2894017f4ce9df7c931105743f421.jpg', '/uploads/Twist_and_dread.webp'],
+            'Low Fade': ['/uploads/6-fade-with-a-shaved-part.webp', '/uploads/6998a8d55f8e08ecf3543909_ChatGPT-Image-Aug-26-2025-09_13_16-PM.webp', '/uploads/Swanky-Malone---Low-Taper-Fade-Blog_3324f34e-7415-4c7d-ad0f-0dca24ef79a4.webp'],
+            'Mid Fade': ['/uploads/Crew-Cut-Mid-Fade_600x600.webp', '/uploads/Mid-Fade-with-Curls.webp', '/uploads/Fine-Curls-with-Vivid-Mid-Fade.jpg'],
+            'High Fade': ['/uploads/pointed_drop_fade.original.jpg', '/uploads/Temple-Fade_600x600.webp', '/uploads/high-taper-fade-black-male-2-600x375.webp', '/uploads/high-taper-fade-black-male.webp'],
+            'Taper Fade': ['/uploads/68ec4c53dc13f1c88bf4651268c4d325.jpg', '/uploads/Low_Taper_Fade_Fluffy_Hair.webp'],
+            'Burst Fade': ['/uploads/Bald_Burst_Fade_1-1024x1024.jpg', '/uploads/Burst-Fade-Buzz-Cut.webp', '/uploads/burst-fade-haircut-textured-crop.jpg'],
+            'Blade Cut': ['/uploads/360_F_813405255_QH54qgZsqpuUBj7UjpFEiJnezjOgZDJz.jpg', '/uploads/Shaved-Head-43-650x650.jpg', '/uploads/Shaved-Head-44-650x650.jpg'],
+            'Beard Trim': ['/uploads/clean-shaven.webp', '/uploads/Shaved-Head-44-650x650.jpg'],
+            'Beard + Hot Towel': ['/uploads/smiling-man-getting-a-hot-towel-shave-1.jpg', '/uploads/hot-towel-shave.webp']
+        };
+
+        function getFallbackImage(serviceName) {
+            for (const [key, images] of Object.entries(serviceImages)) {
+                if (serviceName.includes(key) || key.includes(serviceName)) {
+                    return images[0];
+                }
+            }
+            return '/uploads/6-fade-with-a-shaved-part.webp';
+        }
+
+        // Helper functions
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${type === 'success' ? '#22c55e' : '#ef4444'}; color: white; padding: 12px 20px; border-radius: 10px; z-index: 1000; animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px;`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            if(toggle && sidebar) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+            document.addEventListener('click', function(e) {
+                if(window.innerWidth<=768 && sidebar && toggle && !sidebar.contains(e.target) && !toggle.contains(e.target)) sidebar.classList.remove('open');
+            });
+
+            // Show/hide dye price field based on checkbox
+            const hasDyeCheckbox = document.getElementById('serviceHasDye');
+            const dyePriceGroup = document.getElementById('dyePriceGroup');
+            if(hasDyeCheckbox) {
+                hasDyeCheckbox.addEventListener('change', function() {
+                    dyePriceGroup.style.display = this.checked ? 'block' : 'none';
+                });
+            }
+        });
+
+        function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href='login.html'; }
+        function refreshAuditLogs() { loadAuditLogs(); }
+
+        function updateRealTimeClock() {
+            const now = new Date();
+            document.getElementById('realTimeClock').innerHTML = now.toLocaleDateString('en-ZA', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Africa/Johannesburg' });
+        }
+        updateRealTimeClock(); setInterval(updateRealTimeClock,1000);
+
+        // Tab switching
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(nav=>nav.classList.remove('active'));
+                this.classList.add('active');
+                const tab = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+                document.getElementById(`tab-${tab}`).classList.add('active');
+                if(tab==='queue') loadQueue();
+                if(tab==='iot') loadSensors();
+                if(tab==='audit') loadAuditLogs();
+                if(tab==='backup') loadBackupLogs();
+                if(tab==='barbers') loadBarbers();
+                if(tab==='services') loadServices();
+                if(tab==='appointments') loadAllAppointments();
+                if(tab==='overview') { loadKPI(); updateCharts(); loadRecentAppointments(); }
+                if(tab==='reports') loadReports();
+                if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open');
+            });
+        });
+
+        function startRealTimeRefresh() {
+            if(queueRefreshInterval) clearInterval(queueRefreshInterval);
+            queueRefreshInterval = setInterval(() => { if(document.getElementById('tab-queue')?.classList.contains('active')) loadQueue(); },5000);
+            if(iotAutoRefreshInterval) clearInterval(iotAutoRefreshInterval);
+            iotAutoRefreshInterval = setInterval(() => {
+                if(document.getElementById('tab-iot')?.classList.contains('active')) loadSensors();
+                if(document.getElementById('tab-barbers')?.classList.contains('active')) loadBarbers();
+            },3000);
+        }
+
+        async function loadKPI() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try {
+                const res = await fetch('/api/admin/stats',{headers:{'Authorization':`Bearer ${token}`}});
+                const stats = await res.json();
+                document.getElementById('kpiGrid').innerHTML = `
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-calendar-day"></i></div></div><div class="kpi-value">${stats.todayBookings||0}</div><div class="kpi-label">Today's Bookings</div></div>
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-cut"></i></div></div><div class="kpi-value">${stats.totalBookings||0}</div><div class="kpi-label">Total Bookings</div></div>
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-money-bill-wave"></i></div></div><div class="kpi-value">R${stats.totalRevenue||0}</div><div class="kpi-label">Total Revenue</div></div>
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-users"></i></div></div><div class="kpi-value">${stats.totalUsers||0}</div><div class="kpi-label">Registered Customers</div></div>
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-hourglass-half"></i></div></div><div class="kpi-value">${stats.queueWaiting||0}</div><div class="kpi-label">Currently Waiting</div></div>
+                    <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><i class="fas fa-star"></i></div></div><div class="kpi-value">98%</div><div class="kpi-label">Satisfaction Rate</div></div>
+                `;
+            } catch(e){console.error(e);}
+        }
+
+        async function loadRecentAppointments() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try{
+                const res=await fetch('/api/admin/appointments',{headers:{'Authorization':`Bearer ${token}`}});
+                const apps=await res.json();
+                if(Array.isArray(apps)){
+                    document.getElementById('recentAppointmentsBody').innerHTML=apps.slice(0,10).map(a=>`
+                        <tr>
+                            <td>${a.id}</td>
+                            <td>${escapeHtml(a.customer_name)}</span>
+                            <td>${a.service_name||'-'}</span>
+                            <td>${new Date(a.appointment_date).toLocaleDateString('en-ZA')}</span>
+                            <td>${a.appointment_time?.slice(0,5)||'-'}</span>
+                            <td>R${a.service_price||0}</span>
+                            <td><span class="badge ${a.status==='confirmed'?'badge-success':(a.status==='cancelled'?'badge-danger':'badge-warning')}">${a.status||'pending'}</span></span>
+                            <td>${a.checked_in?'<span class="badge-success badge">✅ Checked In</span>':'<span class="badge-warning badge">⏳ Not Checked</span>'}</span>
+                            <td><button class="btn-danger" onclick="deleteAppointment(${a.id})"><i class="fas fa-trash"></i> Delete</button></span>
+                        </tr>
+                    `).join('');
+                }
+            }catch(e){console.error(e);}
+        }
+
+        async function loadAllAppointments() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try{
+                const res=await fetch('/api/admin/appointments',{headers:{'Authorization':`Bearer ${token}`}});
+                const apps=await res.json();
+                if(Array.isArray(apps)){
+                    document.getElementById('allAppointmentsBody').innerHTML=apps.map(a=>`
+                        <tr>
+                            <td>${a.id}</td>
+                            <td>${escapeHtml(a.customer_name)}</span>
+                            <td>${a.service_name||'-'}</span>
+                            <td>${new Date(a.appointment_date).toLocaleDateString('en-ZA')}</span>
+                            <td>${a.appointment_time?.slice(0,5)||'-'}</span>
+                            <td>R${a.service_price||0}</span>
+                            <td><select onchange="updateAppointmentStatus(${a.id}, this.value)">
+                                <option value="confirmed" ${a.status==='confirmed'?'selected':''}>Confirmed</option>
+                                <option value="pending" ${a.status==='pending'?'selected':''}>Pending</option>
+                                <option value="completed" ${a.status==='completed'?'selected':''}>Completed</option>
+                                <option value="cancelled" ${a.status==='cancelled'?'selected':''}>Cancelled</option>
+                            </select></span>
+                            <td>${a.checked_in?'<span class="badge-success badge">✅ Checked In</span>':'<span class="badge-warning badge">⏳ Not Checked</span>'}</span>
+                            <td><button class="btn-danger" onclick="deleteAppointment(${a.id})"><i class="fas fa-trash"></i> Delete</button></span>
+                        </tr>
+                    `).join('');
+                }
+            }catch(e){console.error(e);}
+        }
+
+        async function updateAppointmentStatus(id,status){ const token=localStorage.getItem('token'); if(!token)return; try{ await fetch(`/api/admin/appointments/${id}/status`,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({status})}); loadAllAppointments(); loadRecentAppointments(); showToast(`Appointment #${id} updated to ${status}`,'success'); }catch(e){console.error(e);} }
+        async function deleteAppointment(id){ if(!confirm('Delete this appointment?')) return; const token=localStorage.getItem('token'); if(!token)return; try{ await fetch(`/api/admin/appointments/${id}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}}); loadAllAppointments(); loadRecentAppointments(); loadKPI(); showToast(`Appointment #${id} deleted`,'success'); }catch(e){console.error(e);} }
+
+        // Queue Management – No Start Serving button for admin
+        async function loadQueue() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try {
+                const res = await fetch('/api/queue/status', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                const queue = data.queue || [];
+                const serving = queue.filter(q => q.status === 'serving');
+                const waiting = queue.filter(q => q.status === 'waiting');
+                let html = '';
+                if (serving.length) {
+                    html += `<h4 style="color:#22c55e; margin-bottom:0.5rem;"><i class="fas fa-cut"></i> Being Served (${serving.length})</h4>`;
+                    serving.forEach(q => {
+                        let elapsedText = 'Just started';
+                        const startTime = q.actual_start_time || q.created_at;
+                        if (startTime) { const mins = Math.floor((new Date() - new Date(startTime)) / 60000); if (mins>0) elapsedText = `${mins} min ago`; }
+                        html += `<div class="queue-card serving">
+                            <div style="display:flex; justify-content:space-between;">
+                                <div><strong>#${q.queue_number}</strong> - ${escapeHtml(q.customer_name)}</div>
+                                <div><span class="badge-success badge"><i class="fas fa-cut"></i> Being Served</span></div>
+                            </div>
+                            <div style="margin-top:8px; display:flex; gap:10px;">
+                                <span><i class="fas fa-clock"></i> Started: ${elapsedText}</span>
+                                <button class="btn-success" onclick="updateQueueStatus(${q.id}, 'completed')">Complete</button>
+                            </div>
+                        </div>`;
+                    });
+                }
+                if (waiting.length) {
+                    html += `<h4 style="color:#d4af37; margin-top:1rem; margin-bottom:0.5rem;"><i class="fas fa-clock"></i> Waiting Queue (${waiting.length})</h4>`;
+                    waiting.forEach(q => {
+                        html += `<div class="queue-card">
+                            <div style="display:flex; justify-content:space-between;">
+                                <div><strong>#${q.queue_number}</strong> - ${escapeHtml(q.customer_name)}</div>
+                                <div><span class="badge-warning badge">⏳ Waiting</span></div>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <span><i class="fas fa-hourglass-half"></i> Est: ${(q.queue_number - 1) * 20} min</span>
+                                <!-- Start Serving button intentionally omitted for admin -->
+                            </div>
+                        </div>`;
+                    });
+                }
+                document.getElementById('queueList').innerHTML = html || '<div class="empty-state"><i class="fas fa-users"></i><p>No customers in queue</p></div>';
+                document.getElementById('queueStats').innerHTML = `<div class="kpi-card"><div class="kpi-value">${waiting.length}</div><div class="kpi-label">Waiting</div></div><div class="kpi-card"><div class="kpi-value">${serving.length}</div><div class="kpi-label">Being Served</div></div><div class="kpi-card"><div class="kpi-value">${data.estimatedWaitTime||0}</div><div class="kpi-label">Est. Wait (min)</div></div>`;
+            } catch(e){ console.error(e); }
+        }
+
+        async function updateQueueStatus(id, status) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch(`/api/queue/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(status === 'completed' ? '✅ Service completed!' : '✅ Status updated!', 'success');
+                    loadQueue(); loadKPI(); loadSensors();
+                } else {
+                    showToast(data.message || data.error || 'Error', 'error');
+                }
+            } catch(e){ showToast('Error updating status', 'error'); }
+        }
+
+        // ========== SERVICE MANAGEMENT (with image upload and dye price) ==========
+        async function loadServices() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try {
+                const res = await fetch('/api/admin/services',{headers:{'Authorization':`Bearer ${token}`}});
+                const services = await res.json();
+                if(services.length){
+                    document.getElementById('servicesList').innerHTML = services.map(s => {
+                        let imageUrl = (s.image_url && s.image_url !== 'null' && s.image_url.trim() !== '') 
+                            ? s.image_url 
+                            : getFallbackImage(s.name);
+                        return `
+                        <div class="service-card">
+                            <img src="${imageUrl}" class="service-img" alt="${escapeHtml(s.name)}" onerror="this.onerror=null; this.src='${getFallbackImage(s.name)}'">
+                            <div class="service-info">
+                                <h4><i class="fas fa-cut"></i> ${escapeHtml(s.name)}</h4>
+                                <p><i class="fas fa-tag"></i> ${escapeHtml(s.category||'Uncategorized')}</p>
+                                <p><i class="fas fa-currency-sign"></i> R${s.price_no_dye} ${s.has_dye ? `(with dye: R${s.price_with_dye})` : ''}</p>
+                                ${s.has_dye ? `<p><span class="badge-info badge">🎨 Has Dye Option</span></p>` : ''}
+                                <div class="service-status">Status: ${s.is_active ? '<span class="badge-success badge">🟢 Active</span>' : '<span class="badge-danger badge">🔴 Inactive</span>'}</div>
+                                <div class="service-actions">
+                                    <button class="btn-warning" onclick="editService(${s.id}, '${escapeHtml(s.name)}', '${escapeHtml(s.description||'')}', '${s.category||'Classic'}', ${s.price_no_dye}, ${s.has_dye}, '${s.image_url||''}', ${s.price_with_dye || 0})"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn-info" onclick="toggleServiceStatus(${s.id}, ${!s.is_active})"><i class="fas fa-power-off"></i> ${s.is_active ? 'Disable' : 'Enable'}</button>
+                                    <button class="btn-danger" onclick="deleteService(${s.id}, '${escapeHtml(s.name)}')"><i class="fas fa-trash"></i> Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `}).join('');
+                } else {
+                    document.getElementById('servicesList').innerHTML = `<div class="empty-state"><i class="fas fa-cut"></i><p>No services found. Click "Add Service" to create one.</p></div>`;
+                }
+            } catch(err){ console.error(err); document.getElementById('servicesList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading services: ${err.message}</p></div>`; }
+        }
+
+        function openAddServiceModal() {
+            document.getElementById('serviceModalTitle').innerText = 'Add Service';
+            document.getElementById('serviceId').value = '';
+            document.getElementById('serviceName').value = '';
+            document.getElementById('serviceDescription').value = '';
+            document.getElementById('serviceCategory').value = 'Classic';
+            document.getElementById('servicePrice').value = '';
+            document.getElementById('serviceHasDye').checked = false;
+            document.getElementById('servicePriceWithDye').value = '';
+            document.getElementById('dyePriceGroup').style.display = 'none';
+            document.getElementById('serviceImage').value = '';
+            document.getElementById('existingImageUrl').value = '';
+            document.getElementById('currentImagePreview').style.display = 'none';
+            document.getElementById('serviceImagePreview').src = '';
+            document.getElementById('serviceModal').style.display = 'flex';
+        }
+
+        function editService(id, name, description, category, price, hasDye, imageUrl, priceWithDye) {
+            document.getElementById('serviceModalTitle').innerText = 'Edit Service';
+            document.getElementById('serviceId').value = id;
+            document.getElementById('serviceName').value = name;
+            document.getElementById('serviceDescription').value = description;
+            document.getElementById('serviceCategory').value = category;
+            document.getElementById('servicePrice').value = price;
+            document.getElementById('serviceHasDye').checked = hasDye;
+            document.getElementById('dyePriceGroup').style.display = hasDye ? 'block' : 'none';
+            document.getElementById('servicePriceWithDye').value = priceWithDye || '';
+            if(imageUrl && imageUrl !== 'null' && imageUrl !== '') {
+                document.getElementById('existingImageUrl').value = imageUrl;
+                document.getElementById('serviceImagePreview').src = imageUrl;
+                document.getElementById('currentImagePreview').style.display = 'block';
+            } else {
+                document.getElementById('existingImageUrl').value = '';
+                document.getElementById('currentImagePreview').style.display = 'none';
+            }
+            document.getElementById('serviceImage').value = '';
+            document.getElementById('serviceModal').style.display = 'flex';
+        }
+
+        function removeImage() {
+            document.getElementById('serviceImage').value = '';
+            document.getElementById('existingImageUrl').value = '';
+            document.getElementById('currentImagePreview').style.display = 'none';
+            document.getElementById('serviceImagePreview').src = '';
+        }
+
+        async function saveService() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            const id = document.getElementById('serviceId').value;
+            const name = document.getElementById('serviceName').value;
+            const description = document.getElementById('serviceDescription').value;
+            const category = document.getElementById('serviceCategory').value;
+            const price = document.getElementById('servicePrice').value;
+            const hasDye = document.getElementById('serviceHasDye').checked;
+            const priceWithDye = document.getElementById('servicePriceWithDye').value;
+            const imageFile = document.getElementById('serviceImage').files[0];
+            const existingImage = document.getElementById('existingImageUrl').value;
+            if(!name || !price){
+                document.getElementById('serviceModalMsg').innerHTML = '<span style="color:#ef4444;">Name and price required</span>';
+                return;
+            }
+            if(hasDye && !priceWithDye){
+                document.getElementById('serviceModalMsg').innerHTML = '<span style="color:#ef4444;">Please enter price with dye</span>';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('category', category);
+            formData.append('price_no_dye', parseFloat(price));
+            formData.append('has_dye', hasDye);
+            if(hasDye) formData.append('price_with_dye', parseFloat(priceWithDye));
+            formData.append('is_active', 'true');
+            if(imageFile) formData.append('image', imageFile);
+            else if(existingImage && existingImage !== '') formData.append('existing_image', existingImage);
+            try {
+                let url, method;
+                if(id){ url = `/api/admin/services/${id}`; method = 'PUT'; }
+                else{ url = '/api/admin/services'; method = 'POST'; }
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await res.json();
+                if(res.ok && data.success){
+                    document.getElementById('serviceModalMsg').innerHTML = '<span style="color:#22c55e;">✅ Service saved!</span>';
+                    setTimeout(()=>{ closeServiceModal(); loadServices(); },1500);
+                } else {
+                    document.getElementById('serviceModalMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Failed'}</span>`;
+                }
+            } catch(err){
+                document.getElementById('serviceModalMsg').innerHTML = '<span style="color:#ef4444;">Network error</span>';
+            }
+        }
+
+        async function toggleServiceStatus(id, newStatus){
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try{
+                const res = await fetch(`/api/admin/services/${id}/toggle`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ is_active: newStatus })
+                });
+                const data = await res.json();
+                if(res.ok && data.success){
+                    showToast(`Service ${newStatus ? 'enabled' : 'disabled'}`, 'success');
+                    loadServices();
+                } else {
+                    showToast(data.error || 'Failed to update status', 'error');
+                }
+            } catch(e){ showToast('Network error', 'error'); }
+        }
+
+        async function deleteService(id, name){
+            if(!confirm(`Delete service "${name}"? This action cannot be undone.`)) return;
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try{
+                const res = await fetch(`/api/admin/services/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if(res.ok && data.success){
+                    showToast(`Service ${name} deleted`, 'success');
+                    loadServices();
+                } else {
+                    showToast(data.error || 'Failed to delete', 'error');
+                }
+            } catch(e){ showToast('Network error', 'error'); }
+        }
+
+        function closeServiceModal(){ document.getElementById('serviceModal').style.display='none'; document.getElementById('serviceModalMsg').innerHTML=''; }
+
+        // ========== BARBER MANAGEMENT ==========
+        async function loadBarbers() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` } });
+                const users = await res.json();
+                const barbers = users.filter(u => u.role === 'barber');
+                const sensorsRes = await fetch('/api/iot/sensors', { headers: { 'Authorization': `Bearer ${token}` } });
+                const sensors = await sensorsRes.json();
+                if (barbers.length) {
+                    document.getElementById('barbersList').innerHTML = barbers.map(b => {
+                        const sensor = sensors.find(s => s.sensor_name === `Barber Station ${b.barber_station}`);
+                        let currentStatus = 'available';
+                        if (sensor && sensor.last_data) {
+                            try { const data = typeof sensor.last_data === 'object' ? sensor.last_data : JSON.parse(sensor.last_data); currentStatus = data.status || 'available'; } catch(e) {}
+                        }
+                        if (sensor && sensor.status === 'offline' && currentStatus === 'available') currentStatus = 'unavailable';
+                        if (sensor && sensor.status === 'maintenance' && currentStatus === 'available') currentStatus = 'maintenance';
+                        let statusBadge = '';
+                        if (currentStatus === 'available') statusBadge = '<span class="badge-success badge"><i class="fas fa-check"></i> AVAILABLE</span>';
+                        else if (currentStatus === 'unavailable') statusBadge = '<span class="badge-danger badge"><i class="fas fa-circle"></i> UNAVAILABLE</span>';
+                        else if (currentStatus === 'maintenance') statusBadge = '<span class="badge-warning badge"><i class="fas fa-tools"></i> MAINTENANCE</span>';
+                        return `
+                            <div class="barber-card">
+                                <div class="barber-info">
+                                    <h4><i class="fas fa-user"></i> ${escapeHtml(b.name)}</h4>
+                                    <p><i class="fas fa-envelope"></i> ${escapeHtml(b.email)}</p>
+                                    <p><i class="fas fa-phone"></i> ${b.phone || 'Not provided'}</p>
+                                    <p><i class="fas fa-chair"></i> Station ${b.barber_station || 'Not assigned'}</p>
+                                    <p><i class="fas fa-calendar"></i> Joined: ${b.created_at ? new Date(b.created_at).toLocaleDateString('en-ZA') : 'Unknown'}</p>
+                                    <p><strong>Status:</strong> ${statusBadge}</p>
+                                    <select class="status-select" id="status-${b.id}" onchange="updateBarberStatus(${b.id}, ${b.barber_station}, this.value)">
+                                        <option value="available" ${currentStatus === 'available' ? 'selected' : ''}>🟢 Available</option>
+                                        <option value="unavailable" ${currentStatus === 'unavailable' ? 'selected' : ''}>🔴 Unavailable</option>
+                                        <option value="maintenance" ${currentStatus === 'maintenance' ? 'selected' : ''}>🟡 Maintenance</option>
+                                    </select>
+                                </div>
+                                <div class="barber-actions">
+                                    <button class="btn-warning" onclick="editBarber(${b.id}, '${escapeHtml(b.name)}', '${escapeHtml(b.email)}', '${b.phone || ''}', ${b.barber_station || 1})"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn-primary" onclick="openResetPassword(${b.id}, '${escapeHtml(b.name)}')"><i class="fas fa-key"></i> Reset Pwd</button>
+                                    <button class="btn-danger" onclick="deleteBarber(${b.id}, '${escapeHtml(b.name)}')"><i class="fas fa-trash"></i> Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    document.getElementById('barbersList').innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>No barbers found. Click "Add Barber" to create one.</p></div>`;
+                }
+            } catch(err) { console.error(err); document.getElementById('barbersList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading barbers: ${err.message}</p></div>`; }
+        }
+
+        async function updateBarberStatus(barberId, station, status) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            const selectElement = document.getElementById(`status-${barberId}`);
+            const originalValue = selectElement.value;
+            selectElement.disabled = true;
+            try {
+                const sensorsRes = await fetch('/api/iot/sensors', { headers: { 'Authorization': `Bearer ${token}` } });
+                const sensors = await sensorsRes.json();
+                const sensor = sensors.find(s => s.sensor_name === `Barber Station ${station}`);
+                if (!sensor) throw new Error('Sensor not found');
+                let currentData = {};
+                try { currentData = typeof sensor.last_data === 'object' ? sensor.last_data : JSON.parse(sensor.last_data || '{}'); } catch(e) { currentData = { status: 'available' }; }
+                currentData.status = status;
+                let sensorOnlineStatus = 'online';
+                if (status === 'unavailable') sensorOnlineStatus = 'offline';
+                if (status === 'maintenance') sensorOnlineStatus = 'maintenance';
+                await fetch(`/api/iot/sensors/${sensor.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status: sensorOnlineStatus, last_data: currentData })
+                });
+                await fetch('/api/iot/simulate-now', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+                showToast(`Barber status updated to ${status}`, 'success');
+                loadBarbers(); loadSensors();
+            } catch(err) { showToast('Error updating status', 'error'); selectElement.value = originalValue; } finally { selectElement.disabled = false; }
+        }
+
+        function openAddBarberModal() { document.getElementById('barberModalTitle').innerText = 'Add Barber'; document.getElementById('barberId').value = ''; document.getElementById('barberName').value = ''; document.getElementById('barberEmail').value = ''; document.getElementById('barberPhone').value = ''; document.getElementById('barberStation').value = '1'; document.getElementById('barberPassword').value = ''; document.getElementById('barberModal').style.display = 'flex'; }
+        function editBarber(id, name, email, phone, station) { document.getElementById('barberModalTitle').innerText = 'Edit Barber'; document.getElementById('barberId').value = id; document.getElementById('barberName').value = name; document.getElementById('barberEmail').value = email; document.getElementById('barberPhone').value = phone; document.getElementById('barberStation').value = station; document.getElementById('barberPassword').value = ''; document.getElementById('barberPassword').placeholder = 'Leave blank to keep current password'; document.getElementById('barberModal').style.display = 'flex'; }
+        async function saveBarber() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            const id = document.getElementById('barberId').value;
+            const name = document.getElementById('barberName').value;
+            const email = document.getElementById('barberEmail').value;
+            const phone = document.getElementById('barberPhone').value;
+            const station = document.getElementById('barberStation').value;
+            const password = document.getElementById('barberPassword').value;
+            if (!name || !email) { document.getElementById('barberModalMsg').innerHTML = '<span style="color:#ef4444;">Name and email are required</span>'; return; }
+            if (!id && !password) { document.getElementById('barberModalMsg').innerHTML = '<span style="color:#ef4444;">Password is required for new barber</span>'; return; }
+            try {
+                let url, method, body;
+                if (id) { url = `/api/admin/users/${id}`; method = 'PUT'; body = JSON.stringify({ name, email, phone, barber_station: station, password: password || undefined }); }
+                else { url = '/api/admin/users'; method = 'POST'; body = JSON.stringify({ name, email, phone, role: 'barber', barber_station: station, password }); }
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body });
+                const data = await res.json();
+                if (res.ok && data.success) { document.getElementById('barberModalMsg').innerHTML = '<span style="color:#22c55e;">✅ Barber saved successfully!</span>'; setTimeout(() => { closeBarberModal(); loadBarbers(); }, 1500); }
+                else { document.getElementById('barberModalMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Failed to save'}</span>`; }
+            } catch(err) { document.getElementById('barberModalMsg').innerHTML = '<span style="color:#ef4444;">Network error</span>'; }
+        }
+        function closeBarberModal() { document.getElementById('barberModal').style.display = 'none'; document.getElementById('barberModalMsg').innerHTML = ''; }
+        let currentResetBarberId = null;
+        function openResetPassword(id, name) { currentResetBarberId = id; document.getElementById('resetBarberName').innerHTML = name; document.getElementById('newPassword').value = ''; document.getElementById('confirmPassword').value = ''; document.getElementById('resetPasswordModal').style.display = 'flex'; }
+        async function confirmResetPassword() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (!newPassword) { document.getElementById('resetPwdMsg').innerHTML = '<span style="color:#ef4444;">Enter new password</span>'; return; }
+            if (newPassword !== confirmPassword) { document.getElementById('resetPwdMsg').innerHTML = '<span style="color:#ef4444;">Passwords do not match</span>'; return; }
+            if (newPassword.length < 4) { document.getElementById('resetPwdMsg').innerHTML = '<span style="color:#ef4444;">Password must be at least 4 characters</span>'; return; }
+            try {
+                const res = await fetch(`/api/admin/users/${currentResetBarberId}/reset-password`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ password: newPassword }) });
+                const data = await res.json();
+                if (res.ok && data.success) { document.getElementById('resetPwdMsg').innerHTML = '<span style="color:#22c55e;">✅ Password reset successfully!</span>'; setTimeout(() => closeResetPasswordModal(), 1500); }
+                else { document.getElementById('resetPwdMsg').innerHTML = `<span style="color:#ef4444;">❌ ${data.error || 'Failed to reset password'}</span>`; }
+            } catch(err) { document.getElementById('resetPwdMsg').innerHTML = '<span style="color:#ef4444;">Network error</span>'; }
+        }
+        function closeResetPasswordModal() { document.getElementById('resetPasswordModal').style.display = 'none'; document.getElementById('resetPwdMsg').innerHTML = ''; currentResetBarberId = null; }
+        async function deleteBarber(id, name) { if (!confirm(`Delete barber "${name}"?`)) return; const token = localStorage.getItem('token'); if (!token) return; try { const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }); const data = await res.json(); if (res.ok && data.success) { showToast(`Barber ${name} deleted`, 'success'); loadBarbers(); } else { showToast(data.error || 'Failed to delete', 'error'); } } catch(e) { showToast('Network error', 'error'); } }
+
+        // ========== IOT SENSORS ==========
+        async function loadSensors() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/iot/sensors', { headers: { 'Authorization': `Bearer ${token}` } });
+                const sensors = await res.json();
+                const now = new Date();
+                const currentTimeStr = now.toLocaleTimeString('en-ZA', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                document.getElementById('iotLastUpdate').innerHTML = `<i class="fas fa-check-circle"></i> Updated at ${currentTimeStr} (SAST)`;
+                document.getElementById('sensorsList').innerHTML = sensors.map(s => {
+                    let lastDataHtml = '', sensorIcon = '', statusClass = s.status === 'online' ? 'online' : (s.status === 'maintenance' ? 'maintenance' : 'offline');
+                    let lastUpdateTime = 'Never', isRecent = false;
+                    if (s.last_update) { const updateDate = new Date(s.last_update); if (!isNaN(updateDate)) { lastUpdateTime = updateDate.toLocaleTimeString('en-ZA', { hour12: false }); isRecent = Math.abs((now - updateDate)/1000) < 15; } }
+                    if (s.sensor_name === 'QR Code Scanner') { sensorIcon = '<i class="fas fa-qrcode"></i>'; lastDataHtml = '<small>📱 Ready for scan</small>'; }
+                    else if (s.sensor_name.includes('Barber Station')) { sensorIcon = '<i class="fas fa-chair"></i>'; try { const data = typeof s.last_data === 'object' ? s.last_data : JSON.parse(s.last_data || '{"status":"available"}'); if (data.status === 'busy') lastDataHtml = `<small><i class="fas fa-cut"></i> SERVING: ${data.serving}</small>`; else if (data.status === 'unavailable') lastDataHtml = `<small><i class="fas fa-circle"></i> Unavailable</small>`; else if (data.status === 'maintenance') lastDataHtml = `<small><i class="fas fa-tools"></i> Maintenance</small>`; else lastDataHtml = `<small><i class="fas fa-check"></i> Available</small>`; } catch(e) { lastDataHtml = '<small>Available</small>'; } }
+                    else if (s.sensor_name === 'Queue Counter Sensor') { sensorIcon = '<i class="fas fa-chart-line"></i>'; try { const data = typeof s.last_data === 'object' ? s.last_data : JSON.parse(s.last_data || '{"count":0}'); lastDataHtml = `<small>👥 ${data.count || 0} waiting</small>`; } catch(e) {} }
+                    else if (s.sensor_name === 'Digital Queue Display') { sensorIcon = '<i class="fas fa-tv"></i>'; try { const data = typeof s.last_data === 'object' ? s.last_data : JSON.parse(s.last_data || '{"waiting":0}'); lastDataHtml = `<small>📺 ${data.waiting || 0} waiting</small>`; } catch(e) {} }
+                    return `<div class="sensor-card"><div style="display:flex; justify-content:space-between;"><h4>${sensorIcon} ${s.sensor_name}</h4><span class="sensor-status-dot ${statusClass}"></span></div><p style="font-size:0.8rem; color:#9ca3af;">Type: ${s.sensor_type}</p><p style="font-size:0.8rem; color:#9ca3af;">Location: ${s.location || 'Not set'}</p><div style="margin-top:8px;">${lastDataHtml}</div><p style="font-size:0.7rem; color:#6b7280; margin-top:8px;">Last update: ${lastUpdateTime} ${isRecent ? '<span style="color:#22c55e;">(Live)</span>' : '<span style="color:#ef4444;">(Stale)</span>'}</p></div>`;
+                }).join('');
+            } catch(err) { console.error(err); document.getElementById('sensorsList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading sensors: ${err.message}</p></div>`; }
+        }
+
+        // ========== CHARTS, REPORTS, AUDIT, BACKUP ==========
+        async function updateCharts() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/admin/appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                const appointments = await res.json();
+                if (!Array.isArray(appointments)) return;
+                const last7Days = [], dayCounts = {};
+                for (let i=6; i>=0; i--) { const d = new Date(); d.setDate(d.getDate()-i); const day = d.toLocaleDateString('en-ZA',{weekday:'short'}); last7Days.push(day); dayCounts[day]=0; }
+                appointments.forEach(a => { const day = new Date(a.appointment_date).toLocaleDateString('en-ZA',{weekday:'short'}); if(dayCounts[day]!==undefined) dayCounts[day]++; });
+                const bookingCounts = last7Days.map(d => dayCounts[d]);
+                const serviceCounts = {}; appointments.forEach(a => { const sn = a.service_name||'Other'; serviceCounts[sn] = (serviceCounts[sn]||0)+1; });
+                const topServices = Object.entries(serviceCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+                if (bookingsChart) bookingsChart.destroy();
+                if (servicesChart) servicesChart.destroy();
+                const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+                bookingsChart = new Chart(bookingsCtx, { type:'line', data:{ labels:last7Days, datasets:[{ label:'Bookings', data:bookingCounts, borderColor:'#d4af37', backgroundColor:'rgba(212,175,55,0.1)', tension:0.3, fill:true }] }, options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#fff' } } }, scales:{ y:{ ticks:{ color:'#9ca3af', stepSize:1 }, grid:{ color:'rgba(255,255,255,0.05)' } }, x:{ ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,0.05)' } } } } });
+                const servicesCtx = document.getElementById('servicesChart').getContext('2d');
+                servicesChart = new Chart(servicesCtx, { type:'pie', data:{ labels:topServices.map(s=>`${s[0]} (${s[1]})`), datasets:[{ data:topServices.map(s=>s[1]), backgroundColor:pieChartColors.slice(0,topServices.length), borderWidth:2, borderColor:'#1a1a2e' }] }, options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ color:'#fff', font:{ size:11 } } }, tooltip:{ callbacks:{ label:ctx=>`${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/ctx.dataset.data.reduce((a,b)=>a+b,0)*100)}%)` } } } } });
+            } catch(e){ console.error(e); }
+        }
+
+        async function loadReports() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const perfRes = await fetch('/api/admin/barber-performance', { headers: { 'Authorization': `Bearer ${token}` } });
+                const barberStats = await perfRes.json();
+                let barberHtml = '<div style="display:grid; gap:1rem;">';
+                for (let i=1;i<=3;i++) { const stat = barberStats[i]; if(stat) barberHtml += `<div class="barber-performance-card"><h4 style="color:#d4af37;">${stat.barber_name}</h4><div><strong>${stat.total_services}</strong> services · <strong>${stat.avg_service_time_min}</strong> min avg</div><div style="font-size:0.8rem; color:#9ca3af;">Recent: ${stat.recent_services.map(s=>`${s.customer} (${s.service}) - ${s.duration}min`).join(' • ')}</div></div>`; }
+                barberHtml += '</div>';
+                document.getElementById('barberPerformanceDisplay').innerHTML = barberHtml;
+                const res = await fetch('/api/admin/appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                const appointments = await res.json();
+                if (!Array.isArray(appointments)) return;
+                const monthlyData = {};
+                appointments.forEach(a => { if(a.status === 'cancelled') return; const month = new Date(a.appointment_date).toLocaleDateString('en-ZA',{month:'short',year:'numeric'}); if(!monthlyData[month]) monthlyData[month] = { count:0, revenue:0 }; monthlyData[month].count++; monthlyData[month].revenue += parseFloat(a.service_price||0); });
+                const months = Object.keys(monthlyData).sort((a,b)=>new Date(a)-new Date(b)).slice(-6);
+                const tableRows = []; let prevRev = null;
+                for(let m of months){
+                    const data = monthlyData[m];
+                    let growth = (prevRev !== null && prevRev>0) ? (((data.revenue - prevRev)/prevRev*100).toFixed(1))+'%' : 'N/A';
+                    growth = growth.startsWith('-') ? growth : `+${growth}`;
+                    tableRows.push(`<tr><td>${m}</td><td>${data.count}</td><td>R${data.revenue.toFixed(2)}</td><td>${growth}</tr>`);
+                    prevRev = data.revenue;
+                }
+                document.getElementById('reportsBody').innerHTML = tableRows.join('');
+                if(revenueChart) revenueChart.destroy();
+                const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+                revenueChart = new Chart(revenueCtx, { type:'bar', data:{ labels:months, datasets:[{ label:'Revenue (R)', data:months.map(m=>monthlyData[m]?.revenue||0), backgroundColor:'#d4af37', borderRadius:8 }] }, options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#fff' } } }, scales:{ y:{ ticks:{ color:'#9ca3af' } }, x:{ ticks:{ color:'#9ca3af' } } } } });
+            } catch(e){ console.error(e); }
+        }
+
+        async function loadAuditLogs() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/admin/audit-logs', { headers: { 'Authorization': `Bearer ${token}` } });
+                const logs = await res.json();
+                if (Array.isArray(logs)) { document.getElementById('auditLogsBody').innerHTML = logs.slice(0,50).map(l => `<tr><td>${new Date(l.created_at).toLocaleString('en-ZA')}</td><td>${l.user_email||'System'}</td><td><span class="badge-info badge">${l.action}</span></td><td>${l.details||'-'}</td><td>${l.ip_address||'-'}<td>`).join(''); }
+            } catch(e){ console.error(e); }
+        }
+
+        async function loadBackupLogs() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/admin/backups', { headers: { 'Authorization': `Bearer ${token}` } });
+                const backups = await res.json();
+                if (Array.isArray(backups)) { document.getElementById('backupLogsBody').innerHTML = backups.map(b => `<tr><td>${b.backup_name}</td><td>${b.backup_size ? (b.backup_size/1024).toFixed(2)+' KB' : '-'}</td><td><span class="badge-success badge">${b.status}</span></td><td>${new Date(b.created_at).toLocaleString('en-ZA')}</td>`).join(''); }
+            } catch(e){ console.error(e); }
+        }
+
+        async function createBackup() { const token = localStorage.getItem('token'); if(!token) return; try { await fetch('/api/admin/backup', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }); showToast('✅ Backup created successfully!', 'success'); loadBackupLogs(); } catch(e){ showToast('❌ Backup failed', 'error'); } }
+        async function simulateSensors() { const token = localStorage.getItem('token'); if(!token) return; try { await fetch('/api/iot/simulate-now', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }); loadSensors(); loadBarbers(); loadQueue(); showToast('🔄 Sensors refreshed', 'success'); } catch(e){ showToast('❌ Failed to refresh sensors', 'error'); } }
+
+        // Initialization
+        const admin = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('adminName').innerHTML = admin.name || 'Admin';
+        if (!localStorage.getItem('token')) window.location.href = 'login.html';
+        loadKPI(); loadRecentAppointments(); loadAllAppointments(); loadQueue(); loadServices(); loadBarbers(); loadSensors(); loadAuditLogs(); loadBackupLogs(); updateCharts(); startRealTimeRefresh(); loadReports();
+
+        const style = document.createElement('style');
+        style.textContent = `@keyframes slideIn{from{opacity:0;transform:translateX(100px);}to{opacity:1;transform:translateX(0);}} .text-success{color:#22c55e;} .text-danger{color:#ef4444;}`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
